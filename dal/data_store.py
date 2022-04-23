@@ -42,6 +42,8 @@ db = SQLAlchemy(app)
 
 Base = db.Model
 
+ForeignKey = db.ForeignKey
+
 Column = db.Column
 
 SmallInteger = db.SmallInteger

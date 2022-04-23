@@ -7,12 +7,12 @@ from .data_store import *
 
 
 class GroupEx(Base):
+    __abstract__ = True
+
     g_id = Column('g_id', autoincrement=True)
     g_name = Column('g_name')
     g_comments = Column('g_comments')
     tasks_count = Column('tasks_count')
-
-    __abstract__ = True
 
     SQL = """select g.*,  
                 (select count(*) from tasks where g_id=g.g_id) as tasks_count 
