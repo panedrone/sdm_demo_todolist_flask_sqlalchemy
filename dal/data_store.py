@@ -1,61 +1,101 @@
-#########################################
-# code below is for SQLAlchemy without flask
-#
-# import sqlalchemy
-#
-# import sqlalchemy.ext.declarative
-# from sqlalchemy.orm import declarative_base, sessionmaker
-
-# Base = declarative_base()
-#
-# Column = sqlalchemy.Column
-#
-# SmallInteger = sqlalchemy.SmallInteger
-# Integer = sqlalchemy.Integer
-# BigInteger = sqlalchemy.BigInteger
-#
-# Float = sqlalchemy.Float
-#
-# DateTime = sqlalchemy.DateTime
-# String = sqlalchemy.String
-# Boolean = sqlalchemy.Boolean
-# LargeBinary = sqlalchemy.LargeBinary
-
-
-# add "Flask-SQLAlchemy" to requirements.txt. "SQLAlchemy" must be added too
-
+# add "Flask-SQLAlchemy" to requirements.txt.
+# "SQLAlchemy" must be added too
+import flask_sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
-
-from app import app
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todo-list.sqlite'
-# FSADeprecationWarning: SQLALCHEMY_TRACK_MODIFICATIONS adds
-# significant overhead and will be disabled by default in the future.
-# Set it to True or False to suppress this warning.
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db = SQLAlchemy(app)
-
-# import psycopg2
 
 # import cx_Oracle
 
-Base = db.Model
+from app import app
 
-ForeignKey = db.ForeignKey
+if flask_sqlalchemy:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todolist.sqlite'
 
-Column = db.Column
+    # add mysql-connector-python to requirements.txt
+    # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:sa@localhost/todolist'
 
-SmallInteger = db.SmallInteger
-Integer = db.Integer
-BigInteger = db.BigInteger
+    # add psycopg2 to requirements.txt
+    # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:sa@localhost/my-tests'
 
-Float = db.Float
+    # add cx_oracle to requirements.txt
+    # if cx_Oracle:
+    #     user = 'MY_TESTS'
+    #     pwd = 'sa'
+    #     dsn = cx_Oracle.makedsn(
+    #         'localhost', 1521,
+    #         service_name="orcl"
+    #         # service_name='your_service_name_if_any'
+    #     )
+    #     app.config['SQLALCHEMY_DATABASE_URI'] = f'oracle+cx_oracle://{user}:{pwd}@{dsn}'
 
-DateTime = db.DateTime
-String = db.String
-Boolean = db.Boolean
-LargeBinary = db.LargeBinary
+    # FSADeprecationWarning: SQLALCHEMY_TRACK_MODIFICATIONS adds
+    # significant overhead and will be disabled by default in the future.
+    # Set it to True or False to suppress this warning.
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    db = SQLAlchemy(app)
+
+    Base = db.Model
+
+    Column = db.Column
+    ForeignKey = db.ForeignKey
+
+    # if not cx_Oracle:
+    SmallInteger = db.SmallInteger
+    Integer = db.Integer
+    BigInteger = db.BigInteger
+
+    Float = db.Float
+
+    DateTime = db.DateTime
+
+    String = db.String
+    Boolean = db.Boolean
+    LargeBinary = db.LargeBinary
+
+else:
+    # code below is for SQLAlchemy without flask
+
+    import sqlalchemy.ext.declarative
+    from sqlalchemy.orm import declarative_base, sessionmaker
+
+    Base = declarative_base()
+
+    Column = sqlalchemy.Column
+    ForeignKey = sqlalchemy.ForeignKey
+
+    SmallInteger = sqlalchemy.SmallInteger
+    Integer = sqlalchemy.Integer
+    BigInteger = sqlalchemy.BigInteger
+
+    Float = sqlalchemy.Float
+
+    DateTime = sqlalchemy.DateTime
+
+    String = sqlalchemy.String
+    Boolean = sqlalchemy.Boolean
+    LargeBinary = sqlalchemy.LargeBinary
+
+# if cx_Oracle:
+#     from sqlalchemy.dialects import oracle
+#
+#     SmallInteger = oracle.NUMBER
+#     Integer = oracle.NUMBER
+#     BigInteger = oracle.NUMBER
+#
+#     Numeric = oracle.NUMBER
+#     Float = oracle.NUMBER
+#
+#     # unlike default "Float", INSERT works correctly win Identity columns like
+#     # g_id = Column('G_ID', NUMBER, primary_key=True)
+#     NUMBER = oracle.NUMBER
+#
+#     # https://stackoverflow.com/questions/64903159/convert-oracle-datatypes-to-sqlalchemy-types
+#     # https://docs.sqlalchemy.org/en/14/dialects/oracle.html
+#     # Provide the oracle DATE type.
+#     #     This type has no special Python behavior, except that it subclasses
+#     #     :class:`_types.DateTime`; this is to suit the fact that the Oracle
+#     #     ``DATE`` type supports a time value.
+#     DateTime = oracle.DATE  # (timezone=False)
 
 
 class OutParam:
@@ -92,12 +132,12 @@ class DataStore:
     def __init__(self):
         self.conn = None
         self.transaction = None
-
-        self.engine_type = self.EngineType.sqlite3
+        self.engine = None
         #########################################
         # code below is for SQLAlchemy without flask
         #
-        # self.engine = sqlalchemy.create_engine('sqlite:///todo-list.sqlite')
+        # self.engine = sqlalchemy.create_engine('sqlite:///todolist.sqlite')
+        self.engine_type = self.EngineType.sqlite3
 
         # self.engine = sqlalchemy.create_engine('postgresql://postgres:sa@localhost/my-tests')
         # self.engine_type = self.EngineType.postgresql
@@ -116,11 +156,10 @@ class DataStore:
         # self.engine = sqlalchemy.create_engine(f'oracle+cx_oracle://{user}:{pwd}@{dsn}', echo=False)
         # self.engine_type = self.EngineType.oracle
 
-        self.session = db.session
-        #########################################
-        # code below is for sqlalchemy without flask
-        #
-        # self.session = sessionmaker(bind=self.engine)()
+        if db:
+            self.session = db.session
+        else:
+            self.session = sessionmaker(bind=self.engine)()
 
     # code below is for SQLAlchemy without flask
     #

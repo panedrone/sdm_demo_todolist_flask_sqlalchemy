@@ -39,7 +39,7 @@
     <!-- pwd: password; -->
 
     <jdbc jar="sdm/sqlite-jdbc-3.36.0.3.jar" class="org.sqlite.JDBC"
-          url="jdbc:sqlite:$PROJECT_DIR$/todo-list.sqlite" user="" pwd=""/>
+          url="jdbc:sqlite:$PROJECT_DIR$/todolist.sqlite" user="" pwd=""/>
 
     <type-map default="">
 
