@@ -58,7 +58,7 @@
         <type detected="sa-java.lang.Boolean" target="${sa-type}|0:Boolean"/>
         <type detected="sa-byte[]" target="${sa-type}|0:LargeBinary"/>
 
-        <type detected="sa-java.lang.Object" target="${sa-unknown}"/>
+        <type detected="sa-java.lang.Object" target="${sa-type-unknown}"/>
 
         <!-- ****** raw SQL ************************ -->
 
@@ -103,9 +103,7 @@
         <!-- deprecated, don't use -->
         <!--        <global-macro name="${type}" value="= Column('${column}', ${0}${sqlalchemy-params}${1})${comment}"/>-->
 
-        <global-macro name="${sa-unknown}" value="= Column('${column}'${vm:sa-type-params})${comment}"/>
-
-        <!-- TODO: for macros like "${vm:...}", the values are rendered by Apache Velocity -->
+        <global-macro name="${sa-type-unknown}" value="= Column('${column}'${vm:sa-type-params})${comment}"/>
 
         <global-macro name="${sa-type}" value="= Column('${column}', ${0}${vm:sa-type-params})${comment}"/>
 
