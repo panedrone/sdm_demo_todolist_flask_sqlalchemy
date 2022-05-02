@@ -45,6 +45,14 @@
 
         <!-- ***** sqlalchemy (sa) ****************** -->
 
+        <!-- https://github.com/panedrone/sqldalmaker/blob/master/src/resources/data_store_sqlalchemy.py-->
+
+        <!-- all numerics for oracle_cx -->
+
+        <!--        <type detected="sa-java.math.BigDecimal" target="${sa-type}|0:NUMBER"/>-->
+
+        <!-- numerics for others -->
+
         <type detected="sa-java.lang.Short" target="${sa-type}|0:SmallInteger"/>
         <type detected="sa-java.lang.Integer" target="${sa-type}|0:Integer"/>
         <type detected="sa-java.lang.Long" target="${sa-type}|0:BigInteger"/>
@@ -59,6 +67,35 @@
         <type detected="sa-byte[]" target="${sa-type}|0:LargeBinary"/>
 
         <type detected="sa-java.lang.Object" target="${sa-type-unknown}"/>
+
+        <!-- ***** django (dj) ****************** -->
+
+        <type detected="dj-java.lang.Short" target="${dj-type}|0:IntegerField"/>
+        <type detected="dj-java.lang.Integer" target="${dj-type}|0:IntegerField"/>
+        <type detected="dj-java.lang.Long" target="${dj-type}|0:BigIntegerField"/>
+
+        <type detected="dj-java.lang.Float" target="${dj-type}|0:FloatField"/>
+        <type detected="dj-java.lang.Double" target="${dj-type}|0:FloatField"/>
+        <type detected="dj-java.math.BigDecimal" target="${dj-type}|0:DecimalField"/>
+
+        <type detected="dj-java.util.Date" target="${dj-type}|0:DateTimeField"/>
+        <type detected="dj-java.lang.String" target="${dj-type}|0:CharField"/>
+        <type detected="dj-java.lang.Boolean" target="${dj-type}|0:BooleanField"/>
+        <type detected="dj-byte[]" target="${dj-type}|0:BinaryField"/>
+
+        <type detected="dj-java.lang.Object" target="${dj-type}|0:CharField"/>
+
+        <type detected="dj-int" target="${dj-type}|0:IntegerField"/>
+        <type detected="dj-long" target="${dj-type}|0:BigIntegerField"/>
+
+        <type detected="dj-float" target="${dj-type}|0:FloatField"/>
+
+        <type detected="dj-date" target="${dj-type}|0:DateTimeField"/>
+        <type detected="dj-str" target="${dj-type}|0:CharField"/>
+        <type detected="dj-bool" target="${dj-type}|0:BooleanField"/>
+        <!--        <type detected="dj-byte[]" target="${dj-type}|0:BinaryField"/> -->
+
+        <type detected="dj-object" target="${dj-type}|0:CharField"/>
 
         <!-- ****** raw SQL ************************ -->
 
@@ -104,34 +141,98 @@
         <!--        <global-macro name="${type}" value="= Column('${column}', ${0}${sqlalchemy-params}${1})${comment}"/>-->
 
         <global-macro name="${sa-type-unknown}" value="= Column('${column}'${vm:sa-type-params})${comment}"/>
-
         <global-macro name="${sa-type}" value="= Column('${column}', ${0}${vm:sa-type-params})${comment}"/>
+        <global-macro name="${vm:sa-type-params}" value="ref:sa-column"/>
 
-        <global-macro name="${vm:sa-type-params}" value="#if($fi.isPK()),
-primary_key=True#end#if($fi.isAI()),
-autoincrement=True#end#if($fi.getFK()),
-ForeignKey('$fi.getFK()')#end#if($fi.isIndexed()),
-index=True#end#if($fi.isUnique()),
-unique=True#end#if($fi.isNullable()),
-nullable=True#end"/>
-
-        <!-- $fi in this ^^ example is a predefined parameter of class FieldInfo:
-
-                    class FieldInfo:
-                        String getName()
-                        String getType()
-                        String getColumnName()
-                        boolean isAI()
-                        boolean isPK()
-                        String getFK()
-                        boolean isNullable()
-                        boolean isIndexed()
-                        boolean isUnique()
-                        String getComment()
-                        String getterMethod()
-                        String setterMethod()
-                    -->
+        <global-macro name="${dj-type}" value="= models.${vm:dj-type}${comment}"/>
+        <global-macro name="${vm:dj-type}" value="ref:dj-field"/>
 
     </global-macros>
+
+    <sdm-scripts>
+
+        <!-- In sdm-scripts dedicated to render fields/columns,
+             "$fi" is a predefined variable of class FieldInfo:
+
+                class FieldInfo:
+                    String getName()
+                    String getType()
+                    String getColumnName()
+                    boolean isAI()
+                    boolean isPK()
+                    String getFK()
+                    boolean isNullable()
+                    boolean isIndexed()
+                    boolean isUnique()
+                    String getComment()
+                    String getterMethod()
+                    String setterMethod()
+                        -->
+
+        <sdm-script name="sa-column-vm">
+            <vm>
+                <![CDATA[#if($fi.isPK()), primary_key=True#end#if($fi.isAI()), autoincrement=True#end#if($fi.getFK()), ForeignKey('$fi.getFK()')#end#if(!$fi.isPK())#if($fi.isIndexed()), index=True#end#if($fi.isUnique()), unique=True#end#end#if($fi.isNullable()), nullable=True#end]]>
+            </vm>
+        </sdm-script>
+
+        <sdm-script name="dj-field-vm">
+            <vm>
+                <![CDATA[#if($fi.isAI())AutoField#else${0}#end(db_column='$fi.getColumnName()'#if($fi.isPK()), primary_key=True#else#if($fi.isIndexed()), db_index=True#end#if($fi.isUnique()), unique=True#end#end#if($fi.isNullable()), blank=True, null=True#end${1})]]>
+            </vm>
+        </sdm-script>
+
+        <sdm-script name="sa-column">
+            <vm-xml>
+                <if var="$fi.isPK()">
+                    <print var=", primary_key=True"/>
+                </if>
+                <if var="$fi.isAI()">
+                    <print var=", autoincrement=True"/>
+                </if>
+                <if var="$fi.getFK()">
+                    <print var=", ForeignKey('$fi.getFK()')"/>
+                </if>
+                <if var="!$fi.isPK()">
+                    <if var="$fi.isIndexed()">
+                        <print var=", index=True"/>
+                    </if>
+                    <if var="$fi.isUnique()">
+                        <print var=", unique=True"/>
+                    </if>
+                    <if var="$fi.isNullable()">
+                        <print var=", nullable=True"/>
+                    </if>
+                </if>
+            </vm-xml>
+        </sdm-script>
+
+        <sdm-script name="dj-field">
+            <vm-xml>
+                <if var="$fi.isAI()">
+                    <print var="AutoField"/>
+                    <else>
+                        <print var="${0}"/>
+                    </else>
+                </if>
+                <print var="(db_column='$fi.getColumnName()'"/>
+                <if var="$fi.isPK()">
+                    <print var=", primary_key=True"/>
+                </if>
+                <if var="!$fi.isPK()">
+                    <if var="$fi.isIndexed()">
+                        <print var=", db_index=True"/>
+                    </if>
+                    <if var="$fi.isUnique()">
+                        <print var=", unique=True"/>
+                    </if>
+                    <if var="$fi.isNullable()">
+                        <print var=", blank=True, null=True"/>
+                    </if>
+                </if>
+                <print var="${1})"/>
+            </vm-xml>
+        </sdm-script>
+
+    </sdm-scripts>
 
 </settings>
