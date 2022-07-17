@@ -2,23 +2,9 @@
 <settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:noNamespaceSchemaLocation="settings.xsd">
 
-    <!-- target: base folder of generated files (relative to the project root); -->
-    <!-- sql: base folder of SQL files (relative to the project root); -->
-
     <folders target="dal" sql="sdm/sql"/>
 
-    <!-- scope: (only Java and PHP) package name of DTO classes for Java or 
-    namespace name of DTO classes for PHP; -->
-    <!-- inheritance: (only Java) fully-qualified name of base class; example 
-    for GWT: 1) inheritance="implements com.google.gwt.user.client.rpc.IsSerializable" 
-    2) target class: public class Word implements com.google.gwt.user.client.rpc.IsSerializable... -->
-    <!-- field-names-mode: (only Java) 0 - as column names; 1 - lowerCamelCase; 
-    2 - lower_case; -->
-
     <dto scope="" inheritance="" field-names-mode="0" single-file="" macro=""/>
-
-    <!-- scope: (only Java and PHP) package name of DAO classes for Java or 
-    namespace name of DAO classes for PHP; -->
 
     <dao scope="" macro=""/>
 
