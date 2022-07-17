@@ -82,5 +82,10 @@ def home():
     return flask.render_template("index.html")
 
 
+# @app.get("/groups")
+# def get_groups():
+#     pass
+
+
 if __name__ == "__main__":  # on running python main.py
     app.run(debug=True)
