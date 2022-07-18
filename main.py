@@ -72,7 +72,7 @@ class TaskResource(flask_restful.Resource):
 
 
 api.add_resource(GroupListResource, "/groups")
-api.add_resource(GroupResource, "/group/<g_id>")
+api.add_resource(GroupResource, "/groups/<int:g_id>")
 api.add_resource(GroupTasksResource, '/group/<g_id>/tasks')
 api.add_resource(TaskResource, '/task/<t_id>')
 
@@ -82,9 +82,16 @@ def home():
     return flask.render_template("index.html")
 
 
-# @app.get("/groups")
-# def get_groups():
-#     pass
+@app.get("/groups2")
+def get_groups():
+    res = groups_svc.get_groups()
+    return to_json_str(res)
+
+
+@app.get("/groups2/<g_id>/tasks")
+def get_group_tasks(g_id):
+    res = tasks_svc.get_group_tasks(g_id)
+    return to_json_str(res)
 
 
 if __name__ == "__main__":  # on running python main.py

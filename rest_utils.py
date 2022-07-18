@@ -4,6 +4,8 @@ from dal.data_store import Base
 
 
 def to_json_str(obj):
+    if obj is None:
+        return None
     if isinstance(obj, list):
         if len(obj) > 0:
             if isinstance(obj[0], Base):

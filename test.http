@@ -1,0 +1,19 @@
+### 200
+
+GET http://127.0.0.1:5000/groups
+
+### 200
+
+GET http://127.0.0.1:5000/groups/21
+
+###
+
+GET http://127.0.0.1:5000/groups/211
+
+###
+
+GET http://127.0.0.1:5000/groups2
+
+###
+
+GET http://127.0.0.1:5000/groups2/21/tasks
