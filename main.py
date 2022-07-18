@@ -1,5 +1,5 @@
 import flask
-import flask_restful
+from flask_restful import Resource, Api
 
 from app import app
 from dal.data_store import DataStore
@@ -13,7 +13,7 @@ groups_svc = GroupsService(ds)
 tasks_svc = TasksService(ds)
 
 
-class GroupListResource(flask_restful.Resource):
+class GroupListResource(Resource):
     @staticmethod
     def get():
         res = groups_svc.get_groups()
@@ -25,7 +25,7 @@ class GroupListResource(flask_restful.Resource):
         groups_svc.create_group(g_name)
 
 
-class GroupResource(flask_restful.Resource):
+class GroupResource(Resource):
     @staticmethod
     def get(g_id):
         res = groups_svc.get_group(g_id)
@@ -41,7 +41,7 @@ class GroupResource(flask_restful.Resource):
         groups_svc.delete_group(g_id)
 
 
-class GroupTasksResource(flask_restful.Resource):
+class GroupTasksResource(Resource):
     @staticmethod
     def get(g_id):
         res = tasks_svc.get_group_tasks(g_id)
@@ -53,7 +53,7 @@ class GroupTasksResource(flask_restful.Resource):
         tasks_svc.create_task(g_id, t_subject)
 
 
-class TaskResource(flask_restful.Resource):
+class TaskResource(Resource):
     @staticmethod
     def get(t_id):
         task = tasks_svc.get_task(t_id)
@@ -74,7 +74,7 @@ class TaskResource(flask_restful.Resource):
         tasks_svc.delete_task(t_id)
 
 
-api = flask_restful.Api(app)
+api = Api(app)
 
 api.add_resource(GroupListResource, "/groups")
 api.add_resource(GroupResource, "/groups/<int:g_id>")
