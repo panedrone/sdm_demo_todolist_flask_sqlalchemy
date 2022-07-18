@@ -1,4 +1,7 @@
-from app import *
+import flask
+import flask_restful
+
+from app import app
 from dal.data_store import DataStore
 from rest_utils import to_json_str
 from services.groups_service import GroupsService
@@ -71,10 +74,12 @@ class TaskResource(flask_restful.Resource):
         tasks_svc.delete_task(t_id)
 
 
+api = flask_restful.Api(app)
+
 api.add_resource(GroupListResource, "/groups")
 api.add_resource(GroupResource, "/groups/<int:g_id>")
-api.add_resource(GroupTasksResource, '/group/<g_id>/tasks')
-api.add_resource(TaskResource, '/task/<t_id>')
+api.add_resource(GroupTasksResource, '/groups/<int:g_id>/tasks')
+api.add_resource(TaskResource, '/tasks/<int:t_id>')
 
 
 @app.route("/")
@@ -88,7 +93,7 @@ def get_groups():
     return to_json_str(res)
 
 
-@app.get("/groups2/<g_id>/tasks")
+@app.get("/groups2/<int:g_id>/tasks")
 def get_group_tasks(g_id):
     res = tasks_svc.get_group_tasks(g_id)
     return to_json_str(res)

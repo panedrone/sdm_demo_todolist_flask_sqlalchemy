@@ -37,7 +37,7 @@
             }
 
             function renderGroupDetails(g_id) {
-                fetch("/group/" + g_id)
+                fetch("/groups/" + g_id)
                         .then(response => response.json())
                         .then(group => {
                             let g_name = document.getElementById("g_name2");
@@ -66,7 +66,7 @@
                 let g_id = document.getElementById("curr_g_id").value;
                 let json = formToJson("form_update_group");
                 // alert(json)
-                fetch("/group/" + g_id, {method: 'put', headers: JSON_HEADERS, body: json})
+                fetch("/groups/" + g_id, {method: 'put', headers: JSON_HEADERS, body: json})
                         .then(response => response.status)
                         .then(status => {
                             if (status === 200) {
@@ -79,7 +79,7 @@
 
             function deleteGroup() {
                 let g_id = document.getElementById("curr_g_id").value;
-                fetch("/group/" + g_id, {method: 'delete'})
+                fetch("/groups/" + g_id, {method: 'delete'})
                         .then(response => response.status)
                         .then(status => {
                             if (status === 200) {
@@ -94,7 +94,7 @@
 
             function renderTaskDetails(t_id) {
                 document.getElementById("curr_t_id").value = t_id;
-                fetch("/task/" + t_id)
+                fetch("/tasks/" + t_id)
                         .then(response => response.json())
                         .then(task => {
                             let subj = document.getElementById("subj");
@@ -113,7 +113,7 @@
 
             function renderGroupTasks(g_id) {
                 let tasksTable = document.getElementById("tasks_table");
-                fetch("/group/" + g_id + "/tasks")
+                fetch("/groups/" + g_id + "/tasks")
                         .then(response => response.json())
                         .then(taskList => {
                             while (tasksTable.rows.length > 1) {
@@ -142,7 +142,7 @@
             function taskCreate() {
                 let g_id = document.getElementById("curr_g_id").value;
                 let json = formToJson("form_create_task");
-                fetch("/group/" + g_id + "/tasks", {method: 'post', headers: JSON_HEADERS, body: json})
+                fetch("/groups/" + g_id + "/tasks", {method: 'post', headers: JSON_HEADERS, body: json})
                         .then(response => response.status)
                         .then(status => {
                             if (status === 200) {
@@ -163,7 +163,7 @@
                         object["t_priority"] = parseInt(object["t_priority"]);
                     }
                 });
-                fetch("/task/" + t_id, {method: 'put', headers: JSON_HEADERS, body: json})
+                fetch("/tasks/" + t_id, {method: 'put', headers: JSON_HEADERS, body: json})
                         .then(response => response.status)
                         .then(status => {
                             if (status === 200) {
@@ -178,7 +178,7 @@
             function taskDelete() {
                 let g_id = document.getElementById("curr_g_id").value;
                 let t_id = document.getElementById("curr_t_id").value;
-                fetch("/task/" + t_id, {method: "delete"})
+                fetch("/tasks/" + t_id, {method: "delete"})
                         .then(response => response.status)
                         .then(status => {
                             if (status === 200) {

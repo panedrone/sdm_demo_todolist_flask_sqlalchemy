@@ -1,5 +1,3 @@
-# add "Flask-SQLAlchemy" to requirements.txt.
-# "SQLAlchemy" must be added too
 import flask_sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
 
