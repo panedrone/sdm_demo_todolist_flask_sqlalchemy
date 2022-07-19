@@ -8,7 +8,7 @@ from services.groups_service import *
 class GroupListResource(Resource):
     @staticmethod
     def get():
-        res = get_groups()
+        res = get_all_groups()
         return to_json_str(res)
         # return json_response(res)
 

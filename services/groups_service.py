@@ -4,7 +4,7 @@ from dbal.group_ex import GroupEx
 from dbal.task import Task
 
 
-def get_groups():
+def get_all_groups():
     # https://stackoverflow.com/questions/17972020/how-to-execute-raw-sql-in-flask-sqlalchemy-app
     # user = session.query(User).from_statement(
     #     text("""SELECT * FROM users where name=:name""")
