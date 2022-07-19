@@ -487,3 +487,6 @@ def _assign_out_params(params, result_args):
     for i in range(len(params)):
         if isinstance(params[i], OutParam):
             params[i].value = result_args[i]
+
+
+data_store = DataStore()

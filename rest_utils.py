@@ -1,6 +1,6 @@
 from flask import jsonify
 
-from dal.data_store import Base
+from dbal.data_store import Base
 
 
 def to_json_str(obj):
