@@ -20,17 +20,5 @@ def home():
     return flask.render_template("index.html")
 
 
-# @app.get("/groups2")
-# def get_groups():
-#     res = get_groups()
-#     return to_json_str(res)
-#
-#
-# @app.get("/groups2/<int:g_id>/tasks")
-# def get_group_tasks(g_id):
-#     res = get_group_tasks(g_id)
-#     return to_json_str(res)
-
-
 if __name__ == "__main__":  # on running python main.py
     app.run(debug=True)

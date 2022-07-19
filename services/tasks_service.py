@@ -29,11 +29,11 @@ def create_task(g_id, t_subject):
     return task
 
 
-def delete_task(t_id):
-    # https://stackoverflow.com/questions/26643727/python-sqlalchemy-deleting-with-the-session-object
-    data_store.session.query(Task).filter(Task.t_id == t_id).delete()
+def update_task(task):
     data_store.commit()
 
 
-def update_task(task):
+def delete_task(t_id):
+    # https://stackoverflow.com/questions/26643727/python-sqlalchemy-deleting-with-the-session-object
+    data_store.session.query(Task).filter(Task.t_id == t_id).delete()
     data_store.commit()
