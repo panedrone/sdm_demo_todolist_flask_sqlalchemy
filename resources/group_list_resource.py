@@ -10,6 +10,7 @@ class GroupListResource(Resource):
     def get():
         res = get_groups()
         return to_json_str(res)
+        # return json_response(res)
 
     @staticmethod
     def post():

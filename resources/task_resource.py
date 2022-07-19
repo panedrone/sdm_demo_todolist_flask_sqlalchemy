@@ -1,7 +1,7 @@
 import flask
 from flask_restful import Resource
 
-from rest_utils import to_json_str
+from rest_utils import json_response
 from services.tasks_service import *
 
 
@@ -9,7 +9,7 @@ class TaskResource(Resource):
     @staticmethod
     def get(t_id):
         task = get_task(t_id)
-        return to_json_str(task)
+        return json_response(task)
 
     @staticmethod
     def put(t_id):

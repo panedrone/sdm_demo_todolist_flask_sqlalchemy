@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, Response
 
 from dbal.data_store import Base
 
@@ -27,3 +27,7 @@ def to_json_str(obj):
         else:
             res = obj.__dict__
     return jsonify(res)
+
+
+def json_response(res):
+    return Response(res, mimetype="application/json", status=200)
