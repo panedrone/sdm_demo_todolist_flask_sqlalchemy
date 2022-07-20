@@ -1,9 +1,9 @@
-from flask import jsonify, Response
+from flask import jsonify
 
 from dbal.data_store import Base
 
 
-def to_json_str(obj):
+def _to_json(obj):
     if obj is None:
         return None
     if isinstance(obj, list):
@@ -26,8 +26,16 @@ def to_json_str(obj):
             res = obj
         else:
             res = obj.__dict__
+    return res
+
+
+def _to_json_str(obj):
+    res = _to_json(obj)
     return jsonify(res)
 
 
 def json_response(res):
-    return Response(res, mimetype="application/json", status=200)
+    # Content-Type: application/json
+    # and httpCode 200
+    # are set without specifying in code
+    return _to_json_str(res)

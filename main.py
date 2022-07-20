@@ -1,4 +1,5 @@
 import flask
+from flask import Blueprint
 from flask_restful import Api
 
 from app import app
@@ -7,7 +8,11 @@ from resources.group_tasks_resource import GroupTasksResource
 from resources.group_list_resource import GroupListResource
 from resources.task_resource import TaskResource
 
-api = Api(app)
+blueprint = Blueprint('api', __name__, url_prefix='/api')
+
+api = Api(blueprint)
+
+app.register_blueprint(blueprint)
 
 api.add_resource(GroupListResource, "/groups")
 api.add_resource(GroupResource, "/groups/<int:g_id>")

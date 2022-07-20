@@ -1,18 +1,18 @@
 ### 200 + json
 
-GET http://127.0.0.1:5000/groups
+GET http://127.0.0.1:5000/api/groups
 
 ### 200 + json
 
-GET http://127.0.0.1:5000/groups/21
+GET http://127.0.0.1:5000/api/groups/21
 
 ### 200 + null
 
-GET http://127.0.0.1:5000/groups/211
+GET http://127.0.0.1:5000/api/groups/211
 
 ### 200 + json
 
-GET http://127.0.0.1:5000/groups/21/tasks
+GET http://127.0.0.1:5000/api/groups/21/tasks
 
 ### 200 --- just testing of @app.get("/groups2")
 
