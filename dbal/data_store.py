@@ -124,9 +124,9 @@ class DataStore:
 
     def query_scalar(self, sql, params): pass
 
-    def query_scalar_array(self, sql, params) -> []: pass
+    def query_all_scalars(self, sql, params) -> []: pass
 
-    def query_single_row(self, sql, params): pass
+    def query_row(self, sql, params): pass
 
     def query_all_rows(self, sql, params, callback) -> []: pass
 
@@ -379,7 +379,7 @@ class _DS(DataStore):
         Raises:
             Exception: if amount of rows != 1.
         """
-        rows = self.query_scalar_array(sql, params)
+        rows = self.query_all_scalars(sql, params)
         if len(rows) == 0:
             raise Exception('No rows')
         if len(rows) > 1:
@@ -389,7 +389,7 @@ class _DS(DataStore):
         else:
             return rows[0]  # 'select get_test_rating(?)' returns just scalar value, not array of arrays
 
-    def query_scalar_array(self, sql, params):
+    def query_all_scalars(self, sql, params):
         """
         Returns:
             array of scalar values
@@ -418,7 +418,7 @@ class _DS(DataStore):
         self._query_sp_mysql(sp, on_result, params)
         return res
 
-    def query_single_row(self, sql, params):
+    def query_row(self, sql, params):
         """
         Returns:
             Single row
