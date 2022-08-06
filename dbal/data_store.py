@@ -73,6 +73,7 @@ else:
     Boolean = sqlalchemy.Boolean
     LargeBinary = sqlalchemy.LargeBinary
 
+
 # if cx_Oracle:
 #     from sqlalchemy.dialects import oracle
 #
@@ -102,6 +103,35 @@ class OutParam:
 
 
 class DataStore:
+
+    def begin(self): pass
+
+    def commit(self): pass
+
+    def rollback(self): pass
+
+    # helpers
+
+    def get_one(self, cls, params=None): pass
+
+    def get_all(self, cls, params=None) -> []: pass
+
+    # the methods called by generated dao classes
+
+    def insert_row(self, sql, params, ai_values): pass
+
+    def exec_dml(self, sql, params): pass
+
+    def query_scalar(self, sql, params): pass
+
+    def query_scalar_array(self, sql, params) -> []: pass
+
+    def query_single_row(self, sql, params): pass
+
+    def query_all_rows(self, sql, params, callback) -> []: pass
+
+
+class _DS(DataStore):
     """
     SQL DAL Maker Website: http://sqldalmaker.sourceforge.net
     This is an example of how to implement DataStore in Python + SQLAlchemy Raw SQL.
@@ -489,4 +519,16 @@ def _assign_out_params(params, result_args):
             params[i].value = result_args[i]
 
 
-data_store = DataStore()
+_ds = _DS()
+
+
+def ds() -> DataStore:
+    return _ds
+
+
+if flask_sqlalchemy:
+    def session() -> flask_sqlalchemy.SessionBase:
+        return _ds.session
+else:
+    def session():
+        return _ds.session

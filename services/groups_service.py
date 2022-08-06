@@ -1,4 +1,4 @@
-from dbal.data_store import data_store
+from dbal.data_store import ds, session
 from dbal.group import Group
 from dbal.group_ex import GroupEx
 from dbal.task import Task
@@ -15,32 +15,32 @@ def get_all_groups():
 
     # m: GroupEx = None
 
-    return data_store.get_all(GroupEx)
+    return ds().get_all(GroupEx)
 
     # return GroupsDao(self.ds).get_groups(GroupEx.SQL)
 
 
 def get_group(g_id):
     # https://www.tutorialspoint.com/sqlalchemy/sqlalchemy_orm_updating_objects.htm
-    group = data_store.session.query(Group).get(g_id)
+    group = session().query(Group).get(g_id)
     return group
 
 
 def create_group(g_name):
     group = Group(g_name=g_name)
-    data_store.session.add(group)
-    data_store.commit()
+    session().add(group)
+    ds().commit()
 
 
 def update_group(g_id, g_name):
     # https://code-maven.com/slides/python/orm-update
-    group = data_store.session.query(Group).get(g_id)
+    group = session().query(Group).get(g_id)
     group.g_name = g_name
-    data_store.commit()
+    ds().commit()
 
 
 def delete_group(g_id):
     # https://stackoverflow.com/questions/26643727/python-sqlalchemy-deleting-with-the-session-object
-    data_store.session.query(Task).filter(Task.g_id == g_id).delete()
-    data_store.session.query(Group).filter(Group.g_id == g_id).delete()
-    data_store.commit()
+    session().query(Task).filter(Task.g_id == g_id).delete()
+    session().query(Group).filter(Group.g_id == g_id).delete()
+    ds().commit()
