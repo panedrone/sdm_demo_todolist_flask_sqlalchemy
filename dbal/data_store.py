@@ -112,11 +112,21 @@ class DataStore:
 
     def rollback(self): pass
 
-    # helpers
+    # raw-SQL
+
+    def get_one_raw(self, cls, params=None): pass
+
+    def get_all_raw(self, cls, params=None) -> []: pass
+
+    # CRUD
+
+    def create(self, instance): pass
+
+    def get_all(self, cls) -> []: pass
 
     def get_one(self, cls, params=None): pass
 
-    def get_all(self, cls, params=None) -> []: pass
+    def delete(self, cls, params=None): pass
 
     # the methods called by generated dao classes
 
@@ -226,7 +236,7 @@ class _DS(DataStore):
         self.transaction.rollback()
         self.transaction = None
 
-    def get_all(self, cls, params=None) -> []:
+    def get_all_raw(self, cls, params=None) -> []:
         """
         :param cls: An __abstract_ model class or plain DTO class containing a static field "SQL"
         :param params: [] the values of SQL params
@@ -249,13 +259,29 @@ class _DS(DataStore):
         finally:
             cursor.close()
 
-    def get_one(self, cls, params=None):
-        rows = self.get_all(cls, params)
+    def get_one_raw(self, cls, params=None):
+        rows = self.get_all_raw(cls, params)
         if len(rows) == 0:
             raise Exception('No rows')
         if len(rows) > 1:
             raise Exception('More than 1 row exists')
         return rows[0]
+
+    def create(self, instance):
+        return self.session.add(instance)
+
+    def get_all(self, cls):
+        return self.session.query(cls).all()
+
+    def get_one(self, cls, params=None):
+        return self.session.query(cls).get(params)
+
+    def delete(self, cls, params=None):
+        if params:
+            found = self.session.query(cls).filter_by(**params)
+        else:
+            found = self.session.query(cls)
+        found.delete()
 
     def insert_row(self, sql, params, ai_values):
         """

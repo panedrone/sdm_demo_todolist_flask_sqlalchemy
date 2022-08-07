@@ -11,7 +11,9 @@ def get_group_tasks(g_id):
 
 def get_task(t_id):
     # https://www.tutorialspoint.com/sqlalchemy/sqlalchemy_orm_updating_objects.htm
-    task = session().query(Task).get(t_id)
+    # task = session().query(Task).get(t_id)
+    # task = session().query(Task).get({"t_id": t_id})
+    task = ds().get_one(Task, {"t_id": t_id})
     return task
 
 
@@ -24,7 +26,7 @@ def create_task(g_id, t_subject):
     task.t_date = dt_string
     task.t_priority = 1
     task.t_comments = ''
-    session().add(task)
+    ds().create(task)
     ds().commit()
     return task
 
@@ -35,5 +37,8 @@ def update_task(task):
 
 def delete_task(t_id):
     # https://stackoverflow.com/questions/26643727/python-sqlalchemy-deleting-with-the-session-object
-    session().query(Task).filter(Task.t_id == t_id).delete()
+    # session().query(Task).filter(Task.t_id == t_id).delete()
+    # session().query(Task).filter_by(**{"t_id": t_id}).delete()
+    ds().delete(Task, {"t_id": t_id})
+    # session().delete(Task(t_id=t_id)) # InvalidRequestError: Instance '<Task at 0x21404f8f6a0>' is not persisted
     ds().commit()
