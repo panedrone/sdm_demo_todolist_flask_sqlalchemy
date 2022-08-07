@@ -1,80 +1,79 @@
-import sys
-
 import flask_sqlalchemy
 
 # import cx_Oracle
 
 
-if flask_sqlalchemy:
+# if flask_sqlalchemy:
 
-    from app import app
+from app import app
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todolist.sqlite'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todolist.sqlite'
 
-    # add mysql-connector-python to requirements.txt
-    # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:sa@localhost/todolist'
+# add mysql-connector-python to requirements.txt
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:sa@localhost/todolist'
 
-    # add psycopg2 to requirements.txt
-    # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:sa@localhost/my-tests'
+# add psycopg2 to requirements.txt
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:sa@localhost/my-tests'
 
-    # add cx_oracle to requirements.txt
-    # if cx_Oracle:
-    #     user = 'MY_TESTS'
-    #     pwd = 'sa'
-    #     dsn = cx_Oracle.makedsn(
-    #         'localhost', 1521,
-    #         service_name="orcl"
-    #         # service_name='your_service_name_if_any'
-    #     )
-    #     app.config['SQLALCHEMY_DATABASE_URI'] = f'oracle+cx_oracle://{user}:{pwd}@{dsn}'
+# add cx_oracle to requirements.txt
+# if cx_Oracle:
+#     user = 'MY_TESTS'
+#     pwd = 'sa'
+#     dsn = cx_Oracle.makedsn(
+#         'localhost', 1521,
+#         service_name="orcl"
+#         # service_name='your_service_name_if_any'
+#     )
+#     app.config['SQLALCHEMY_DATABASE_URI'] = f'oracle+cx_oracle://{user}:{pwd}@{dsn}'
 
-    # FSADeprecationWarning: SQLALCHEMY_TRACK_MODIFICATIONS adds
-    # significant overhead and will be disabled by default in the future.
-    # Set it to True or False to suppress this warning.
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# FSADeprecationWarning: SQLALCHEMY_TRACK_MODIFICATIONS adds
+# significant overhead and will be disabled by default in the future.
+# Set it to True or False to suppress this warning.
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    db = flask_sqlalchemy.SQLAlchemy(app)
+db = flask_sqlalchemy.SQLAlchemy(app)
 
-    Base = db.Model
+Base = db.Model
 
-    Column = db.Column
-    ForeignKey = db.ForeignKey
+Column = db.Column
+ForeignKey = db.ForeignKey
 
-    # if not cx_Oracle:
-    SmallInteger = db.SmallInteger
-    Integer = db.Integer
-    BigInteger = db.BigInteger
+# if not cx_Oracle:
+SmallInteger = db.SmallInteger
+Integer = db.Integer
+BigInteger = db.BigInteger
 
-    Float = db.Float
+Float = db.Float
 
-    DateTime = db.DateTime
+DateTime = db.DateTime
 
-    String = db.String
-    Boolean = db.Boolean
-    LargeBinary = db.LargeBinary
+String = db.String
+Boolean = db.Boolean
+LargeBinary = db.LargeBinary
 
-else:
-    # code below is for SQLAlchemy without flask
 
-    import sqlalchemy.ext.declarative
-    from sqlalchemy.orm import declarative_base, sessionmaker
-
-    Base = declarative_base()
-
-    Column = sqlalchemy.Column
-    ForeignKey = sqlalchemy.ForeignKey
-
-    SmallInteger = sqlalchemy.SmallInteger
-    Integer = sqlalchemy.Integer
-    BigInteger = sqlalchemy.BigInteger
-
-    Float = sqlalchemy.Float
-
-    DateTime = sqlalchemy.DateTime
-
-    String = sqlalchemy.String
-    Boolean = sqlalchemy.Boolean
-    LargeBinary = sqlalchemy.LargeBinary
+# else:
+#     # the code below is for SQLAlchemy without flask
+#
+#     import sqlalchemy.ext.declarative
+#     from sqlalchemy.orm import declarative_base, sessionmaker
+#
+#     Base = declarative_base()
+#
+#     Column = sqlalchemy.Column
+#     ForeignKey = sqlalchemy.ForeignKey
+#
+#     SmallInteger = sqlalchemy.SmallInteger
+#     Integer = sqlalchemy.Integer
+#     BigInteger = sqlalchemy.BigInteger
+#
+#     Float = sqlalchemy.Float
+#
+#     DateTime = sqlalchemy.DateTime
+#
+#     String = sqlalchemy.String
+#     Boolean = sqlalchemy.Boolean
+#     LargeBinary = sqlalchemy.LargeBinary
 
 
 # if cx_Oracle:
@@ -187,10 +186,10 @@ class _DS(DataStore):
         # self.engine = sqlalchemy.create_engine(f'oracle+cx_oracle://{user}:{pwd}@{dsn}', echo=False)
         # self.engine_type = self.EngineType.oracle
 
-        if db:
-            self.session = db.session
-        else:
-            self.session = sessionmaker(bind=self.engine)()
+        # if db:
+        self.session = db.session
+        # else:
+        #     self.session = sessionmaker(bind=self.engine)()
 
     # code below is for SQLAlchemy without flask
     #
