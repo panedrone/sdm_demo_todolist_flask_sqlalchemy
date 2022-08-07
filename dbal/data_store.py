@@ -1,11 +1,14 @@
+import sys
+
 import flask_sqlalchemy
-from flask_sqlalchemy import SQLAlchemy
 
 # import cx_Oracle
 
-from app import app
 
 if flask_sqlalchemy:
+
+    from app import app
+
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todolist.sqlite'
 
     # add mysql-connector-python to requirements.txt
@@ -30,7 +33,7 @@ if flask_sqlalchemy:
     # Set it to True or False to suppress this warning.
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    db = SQLAlchemy(app)
+    db = flask_sqlalchemy.SQLAlchemy(app)
 
     Base = db.Model
 

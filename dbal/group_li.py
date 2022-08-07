@@ -6,7 +6,7 @@ http://sqldalmaker.sourceforge.net
 from .data_store import *
 
 
-class GroupEx(Base):
+class GroupLi(Base):
     __abstract__ = True
 
     g_id = Column('g_id', autoincrement=True)

@@ -4,7 +4,7 @@
 
     <dto-class name="sa-Group" ref="groups"/>
 
-    <dto-class name="sa-GroupEx" ref="get_groups.sql"/>
+    <dto-class name="sa-GroupLi" ref="get_groups.sql"/>
 
     <dto-class name="sa-Task" ref="tasks"/>
 

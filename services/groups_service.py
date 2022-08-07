@@ -1,6 +1,6 @@
 from dbal.data_store import ds, session
 from dbal.group import Group
-from dbal.group_ex import GroupEx
+from dbal.group_li import GroupLi
 from dbal.task import Task
 
 
@@ -15,7 +15,7 @@ def get_all_groups():
 
     # m: GroupEx = None
 
-    return ds().get_all(GroupEx)
+    return ds().get_all(GroupLi)
 
     # return GroupsDao(self.ds).get_groups(GroupEx.SQL)
 
