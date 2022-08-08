@@ -128,11 +128,11 @@ class DataStore:
 
     def create(self, instance): pass
 
-    def get_all(self, cls) -> []: pass
+    def read_all(self, cls) -> []: pass
 
-    def get_one(self, cls, params=None): pass
+    def read_one(self, cls, params=None): pass
 
-    def update(self, instance): pass
+    def update_one(self, instance): pass
 
     def delete_one(self, cls, params=None): pass
 
@@ -289,17 +289,17 @@ class _DS(DataStore):
     def create(self, instance):
         return self.session.add(instance)
 
-    def get_all(self, cls):
+    def read_all(self, cls):
         return self.session.query(cls).all()
 
-    def get_one(self, cls, params=None):
+    def read_one(self, cls, params=None):
         return self.session.query(cls).get(params)
 
-    def update(self, instance): pass
+    def update_one(self, instance):
+        pass
 
     def delete_one(self, cls, params=None):
-        found = self.get_one(cls, params)
-        # found.delete()
+        found = self.read_one(cls, params)
         self.session.delete(found)
 
     def insert_row(self, sql, params, ai_values):
@@ -571,11 +571,3 @@ _ds = _DS()
 
 def ds() -> DataStore:
     return _ds
-
-
-# if flask_sqlalchemy:
-#     def session() -> flask_sqlalchemy.SessionBase:
-#         return _ds.session
-# else:
-#     def session():
-#         return _ds.session

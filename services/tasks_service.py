@@ -3,6 +3,7 @@ from datetime import datetime
 from dbal.data_store import ds
 from dbal.task import Task
 
+_dao = TasksDao(ds())
 
 def get_group_tasks(g_id):
     # tasks = session().query(Task).filter(Task.g_id == g_id).order_by(Task.t_date, Task.t_id).all()

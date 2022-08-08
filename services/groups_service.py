@@ -1,7 +1,10 @@
 from dbal.data_store import ds
 from dbal.group import Group
 from dbal.group_li import GroupLi
+from dbal.groups_dao import GroupsDao
 from dbal.task import Task
+
+_dao = GroupsDao(ds())
 
 
 def get_all_groups():
@@ -22,20 +25,20 @@ def get_all_groups():
 
 def get_group(g_id):
     # https://www.tutorialspoint.com/sqlalchemy/sqlalchemy_orm_updating_objects.htm
-    group = ds().get_one(Group, {"g_id": g_id})
+    group = _dao.read_group(g_id)
     return group
 
 
 def create_group(g_name):
     group = Group(g_name=g_name)
-    ds().create(group)
+    _dao.create_group(group)
     ds().commit()
 
 
 def update_group(g_id, g_name):
     # https://code-maven.com/slides/python/orm-update
     # group = session().query(Group).get(g_id)
-    group = ds().get_one(g_id)
+    group = _dao.read_group(g_id)
     group.g_name = g_name
     ds().commit()
 
