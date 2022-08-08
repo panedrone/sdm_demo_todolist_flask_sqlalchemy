@@ -245,6 +245,13 @@ class _DS(DataStore):
         self.transaction = None
 
     def get_all_raw(self, cls, params=None) -> []:
+        # https://stackoverflow.com/questions/17972020/how-to-execute-raw-sql-in-flask-sqlalchemy-app
+        # user = session.query(User).from_statement(
+        #     text("""SELECT * FROM users where name=:name""")
+        # ).params(name="ed").all()
+
+        # query = self.ds.engine.execute(GroupExModel.SQL) # it returns an array of tuples
+        # return query.all()
         """
         :param cls: An __abstract_ model class or plain DTO class containing a static field "SQL"
         :param params: [] the values of SQL params
