@@ -123,7 +123,7 @@ class $class_name:
         @raise: Exception if no rows inserted.
         """
 #if ($model != "")
-	    self.ds.create(p)
+	    self.ds.create_one(p)
 #else
 #sql_var(false $sql)
         _ai_values = [#foreach ($key in $keys)#set($p='["'+${key.getColumnName()} +'", None]')#list_item($velocityCount $p)#end]

@@ -126,7 +126,7 @@ class DataStore:
 
     # ORM-based CRUD
 
-    def create(self, instance): pass
+    def create_one(self, instance): pass
 
     def read_all(self, cls) -> []: pass
 
@@ -293,7 +293,7 @@ class _DS(DataStore):
         found = self.filter(cls, params)
         found.delete()
 
-    def create(self, instance):
+    def create_one(self, instance):
         return self.session.add(instance)
 
     def read_all(self, cls):

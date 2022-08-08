@@ -19,7 +19,7 @@ class GroupsDao:
         @rtype: None
         @raise: Exception if no rows inserted.
         """
-        self.ds.create(p)
+        self.ds.create_one(p)
 
     def read_group(self, g_id):
         """
