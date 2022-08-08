@@ -1,11 +1,12 @@
 from datetime import datetime
 
-from dbal.data_store import ds, session
+from dbal.data_store import ds
 from dbal.task import Task
 
 
 def get_group_tasks(g_id):
-    tasks = session().query(Task).filter(Task.g_id == g_id).order_by(Task.t_date, Task.t_id).all()
+    # tasks = session().query(Task).filter(Task.g_id == g_id).order_by(Task.t_date, Task.t_id).all()
+    tasks = ds().filter(Task, {'g_id': g_id}).order_by(Task.t_date, Task.t_id).all()
     return tasks
 
 
@@ -39,6 +40,6 @@ def delete_task(t_id):
     # https://stackoverflow.com/questions/26643727/python-sqlalchemy-deleting-with-the-session-object
     # session().query(Task).filter(Task.t_id == t_id).delete()
     # session().query(Task).filter_by(**{"t_id": t_id}).delete()
-    ds().delete(Task, {"t_id": t_id})
+    ds().delete_one(Task, {"t_id": t_id})
     # session().delete(Task(t_id=t_id)) # InvalidRequestError: Instance '<Task at 0x21404f8f6a0>' is not persisted
     ds().commit()

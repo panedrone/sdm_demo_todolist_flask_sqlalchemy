@@ -43,6 +43,6 @@ def update_group(g_id, g_name):
 def delete_group(g_id):
     # https://stackoverflow.com/questions/26643727/python-sqlalchemy-deleting-with-the-session-object
     # session().query(Task).filter(Task.g_id == g_id).delete()
-    ds().delete(Task, {"g_id": g_id})
-    ds().delete(Group, {"g_id": g_id})
+    ds().delete_by_filter(Task, {"g_id": g_id})
+    ds().delete_one(Group, {"g_id": g_id})
     ds().commit()

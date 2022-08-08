@@ -118,7 +118,13 @@ class DataStore:
 
     def get_all_raw(self, cls, params=None) -> []: pass
 
-    # CRUD
+    # ORM helpers
+
+    def filter(self, cls, params=None): pass
+
+    def delete_by_filter(self, cls, params=None): pass
+
+    # ORM-based CRUD
 
     def create(self, instance): pass
 
@@ -126,7 +132,9 @@ class DataStore:
 
     def get_one(self, cls, params=None): pass
 
-    def delete(self, cls, params=None): pass
+    def update(self, instance): pass
+
+    def delete_one(self, cls, params=None): pass
 
     # the methods called by generated dao classes
 
@@ -267,6 +275,17 @@ class _DS(DataStore):
             raise Exception('More than 1 row exists')
         return rows[0]
 
+    def filter(self, cls, params=None):
+        if params:
+            found = self.session.query(cls).filter_by(**params)
+        else:
+            found = self.session.query(cls)
+        return found
+
+    def delete_by_filter(self, cls, params=None):
+        found = self.filter(cls, params)
+        found.delete()
+
     def create(self, instance):
         return self.session.add(instance)
 
@@ -276,12 +295,12 @@ class _DS(DataStore):
     def get_one(self, cls, params=None):
         return self.session.query(cls).get(params)
 
-    def delete(self, cls, params=None):
-        if params:
-            found = self.session.query(cls).filter_by(**params)
-        else:
-            found = self.session.query(cls)
-        found.delete()
+    def update(self, instance): pass
+
+    def delete_one(self, cls, params=None):
+        found = self.get_one(cls, params)
+        # found.delete()
+        self.session.delete(found)
 
     def insert_row(self, sql, params, ai_values):
         """
@@ -554,9 +573,9 @@ def ds() -> DataStore:
     return _ds
 
 
-if flask_sqlalchemy:
-    def session() -> flask_sqlalchemy.SessionBase:
-        return _ds.session
-else:
-    def session():
-        return _ds.session
+# if flask_sqlalchemy:
+#     def session() -> flask_sqlalchemy.SessionBase:
+#         return _ds.session
+# else:
+#     def session():
+#         return _ds.session
