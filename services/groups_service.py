@@ -25,6 +25,7 @@ def create_group(g_name):
 def update_group(g_id, g_name):
     group = _dao.read_group(g_id)
     group.g_name = g_name
+    _dao.update_group(group)
     ds().commit()
 
 
