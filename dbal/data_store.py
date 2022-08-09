@@ -125,7 +125,7 @@ class DataStore:
 
     # ORM-based CRUD
 
-    def create_one(self, instance): pass
+    def create_one(self, instance) -> None: pass
 
     def read_all(self, cls) -> []: pass
 
@@ -294,22 +294,25 @@ class _DS(DataStore):
         #           "row count" feature.
         return found.delete()  # found is a BaseQuery, no fetch!
 
-    def create_one(self, instance):
-        return self.session.add(instance)
+    def create_one(self, instance) -> None:
+        self.session.add(instance)  # return None
+        self.session.flush()
 
-    def read_all(self, cls):
+    def read_all(self, cls) -> []:
         return self.session.query(cls).all()
 
     def read_one(self, cls, params=None):
         return self.session.query(cls).get(params)
 
     def update_one(self, instance):
-        pass
+        self.session.flush()
 
     def delete_one(self, cls, params=None) -> int:
         # found = self.read_one(cls, params) # found is an entity of class cls
         # self.session.delete(found)
-        return self.delete_by_filter(cls, params)  # no fetch!
+        rc = self.delete_by_filter(cls, params)  # no fetch!
+        self.session.flush()
+        return rc
 
     def insert_row(self, sql, params, ai_values):
         """
