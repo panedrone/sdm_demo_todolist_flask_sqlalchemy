@@ -2,7 +2,6 @@ import flask_sqlalchemy
 
 # import cx_Oracle
 
-
 # if flask_sqlalchemy:
 
 from app import app
@@ -122,7 +121,7 @@ class DataStore:
 
     def filter(self, cls, params=None): pass
 
-    def delete_by_filter(self, cls, params=None): pass
+    def delete_by_filter(self, cls, params=None) -> int: pass
 
     # ORM-based CRUD
 
@@ -134,7 +133,7 @@ class DataStore:
 
     def update_one(self, instance): pass
 
-    def delete_one(self, cls, params=None): pass
+    def delete_one(self, cls, params=None) -> int: pass
 
     # the methods called by generated dao classes
 
@@ -289,9 +288,11 @@ class _DS(DataStore):
             found = self.session.query(cls)
         return found
 
-    def delete_by_filter(self, cls, params=None):
+    def delete_by_filter(self, cls, params=None) -> int:
         found = self.filter(cls, params)
-        found.delete()
+        #  :return: the count of rows matched as returned by the database's
+        #           "row count" feature.
+        return found.delete()  # found is a BaseQuery, no fetch!
 
     def create_one(self, instance):
         return self.session.add(instance)
@@ -305,9 +306,10 @@ class _DS(DataStore):
     def update_one(self, instance):
         pass
 
-    def delete_one(self, cls, params=None):
-        found = self.read_one(cls, params)
-        self.session.delete(found)
+    def delete_one(self, cls, params=None) -> int:
+        # found = self.read_one(cls, params) # found is an entity of class cls
+        # self.session.delete(found)
+        return self.delete_by_filter(cls, params)  # no fetch!
 
     def insert_row(self, sql, params, ai_values):
         """

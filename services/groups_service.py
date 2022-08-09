@@ -30,5 +30,6 @@ def update_group(g_id, g_name):
 
 def delete_group(g_id):
     ds().delete_by_filter(Task, {"g_id": g_id})
-    _dao.delete_group(g_id)
+    rows_deleted = _dao.delete_group(g_id)
+    print(f"rows_deleted: {rows_deleted}")
     ds().commit()
