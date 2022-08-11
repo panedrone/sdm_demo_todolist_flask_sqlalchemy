@@ -11,10 +11,9 @@ class GroupLi(Base):
 
     g_id = Column('g_id', autoincrement=True)
     g_name = Column('g_name')
-    g_comments = Column('g_comments')
-    tasks_count = Column('tasks_count')
+    g_tasks_count = Column('g_tasks_count')
 
     SQL = """select g.*,  
-                (select count(*) from tasks where g_id=g.g_id) as tasks_count 
+                (select count(*) from tasks where g_id=g.g_id) as g_tasks_count 
                 from groups g 
                 order by g.g_id"""
