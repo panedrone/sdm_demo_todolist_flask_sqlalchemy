@@ -13,6 +13,7 @@ class TaskResource(Resource):
 
     @staticmethod
     def put(t_id):
+        # TODO update without fetch
         task = get_task(t_id)
         inp = flask.request.json
         task.t_date = inp["t_date"]

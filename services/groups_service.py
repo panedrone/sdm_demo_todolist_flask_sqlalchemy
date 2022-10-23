@@ -4,7 +4,7 @@ from dbal.group_li import GroupLi
 from dbal.groups_dao_ex import GroupsDaoEx
 from dbal.task import Task
 
-_dao = GroupsDaoEx(ds())
+_dao = GroupsDaoEx()
 
 
 def get_all_groups():

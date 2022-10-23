@@ -4,7 +4,7 @@ from dbal.data_store import ds
 from dbal.task import Task
 from dbal.tasks_dao_ex import TasksDaoEx
 
-_dao = TasksDaoEx(ds())
+_dao = TasksDaoEx()
 
 
 def get_group_tasks(g_id):
