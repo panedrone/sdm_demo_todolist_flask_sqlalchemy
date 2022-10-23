@@ -2,14 +2,13 @@ from datetime import datetime
 
 from dbal.data_store import ds
 from dbal.task import Task
-from dbal.tasks_dao import TasksDao
+from dbal.tasks_dao_ex import TasksDaoEx
 
-_dao = TasksDao(ds())
+_dao = TasksDaoEx(ds())
 
 
 def get_group_tasks(g_id):
-    tasks = ds().filter(Task, {'g_id': g_id}).order_by(Task.t_date, Task.t_id).all()
-    return tasks
+    return _dao.get_tasks_by_group(g_id)
 
 
 def get_task(t_id):

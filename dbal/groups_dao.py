@@ -30,14 +30,6 @@ class GroupsDao:
         """
         return self.ds.read_one(Group, {'g_id': g_id})
 
-    def update_group(self, p):
-        """
-        CR(U)D: groups
-        @type p: Group
-        @rtype: int (the number of affected rows)
-        """
-        self.ds.update_one(p)
-
     def delete_group(self, g_id):
         """
         CRU(D): groups
