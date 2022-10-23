@@ -31,6 +31,7 @@ def create_task(g_id, t_subject):
 
 
 def update_task(task):
+    _dao.update_task(task)
     ds().commit()
 
 

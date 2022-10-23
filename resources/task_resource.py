@@ -13,9 +13,9 @@ class TaskResource(Resource):
 
     @staticmethod
     def put(t_id):
-        # TODO update without fetch
-        task = get_task(t_id)
         inp = flask.request.json
+        task = Task()
+        task.t_id = t_id
         task.t_date = inp["t_date"]
         task.t_subject = inp["t_subject"]
         task.t_priority = inp["t_priority"]

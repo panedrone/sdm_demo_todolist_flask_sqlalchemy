@@ -11,8 +11,14 @@ from dbal.tasks_dao import TasksDao
 class TasksDaoEx(TasksDao):
 
     def __init__(self):
-        self.ds = ds()
+        super().__init__(ds())
 
     def get_tasks_by_group(self, g_id):
         tasks = self.ds.filter(Task, {'g_id': g_id}).order_by(Task.t_date, Task.t_id).all()
         return tasks
+
+    def update_task(self, task):
+        t_id = task.t_id
+        task = dict(task.__dict__)
+        task.pop('_sa_instance_state', None)
+        self.ds.filter(Task, {'t_id': t_id}).update(values=task)

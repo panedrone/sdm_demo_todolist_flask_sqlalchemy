@@ -21,13 +21,6 @@ class TasksDao:
         """
         self.ds.create_one(p)
 
-    def read_task_list(self):
-        """
-        C(R)UD: tasks
-        @rtype: list[Task]
-        """
-        return self.ds.read_all(Task)
-
     def read_task(self, t_id):
         """
         C(R)UD: tasks
@@ -36,14 +29,6 @@ class TasksDao:
         @raise: Exception if amount of returned rows != 1.
         """
         return self.ds.read_one(Task, {'t_id': t_id})
-
-    def update_task(self, p):
-        """
-        CR(U)D: tasks
-        @type p: Task
-        @rtype: int (the number of affected rows)
-        """
-        self.ds.update_one(p)
 
     def delete_task(self, t_id):
         """
