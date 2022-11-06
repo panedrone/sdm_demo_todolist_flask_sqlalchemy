@@ -1,3 +1,5 @@
+import os
+
 import flask_sqlalchemy
 
 # import cx_Oracle
@@ -6,7 +8,9 @@ import flask_sqlalchemy
 
 from app import app
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todolist.sqlite'
+dir_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{dir_path}/todolist.sqlite"
 
 # add mysql-connector-python to requirements.txt
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:sa@localhost/todolist'

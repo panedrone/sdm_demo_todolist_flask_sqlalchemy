@@ -17,8 +17,5 @@ class TasksDaoEx(TasksDao):
         tasks = self.ds.filter(Task, {'g_id': g_id}).order_by(Task.t_date, Task.t_id).all()
         return tasks
 
-    def update_task(self, task):
-        t_id = task.t_id
-        task = dict(task.__dict__)
-        task.pop('_sa_instance_state', None)
-        self.ds.filter(Task, {'t_id': t_id}).update(values=task)
+    def update_task(self, t_id, data: dict):
+        self.ds.filter(Task, {'t_id': t_id}).update(values=data)

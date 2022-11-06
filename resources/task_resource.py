@@ -13,14 +13,8 @@ class TaskResource(Resource):
 
     @staticmethod
     def put(t_id):
-        inp = flask.request.json
-        task = Task()
-        task.t_id = t_id
-        task.t_date = inp["t_date"]
-        task.t_subject = inp["t_subject"]
-        task.t_priority = inp["t_priority"]
-        task.t_comments = inp["t_comments"]
-        update_task(task)
+        req_json = flask.request.json
+        update_task(t_id, req_json)
 
     @staticmethod
     def delete(t_id):

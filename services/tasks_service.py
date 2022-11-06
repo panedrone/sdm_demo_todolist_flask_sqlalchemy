@@ -30,8 +30,8 @@ def create_task(g_id, t_subject):
     return task
 
 
-def update_task(task):
-    _dao.update_task(task)
+def update_task(t_id: int, data: dict):
+    _dao.update_task(t_id, data)
     ds().commit()
 
 
