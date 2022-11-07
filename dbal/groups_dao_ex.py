@@ -5,10 +5,10 @@ My hand-coded extension of generated class
 """
 from dbal.data_store import ds
 from dbal.group import Group
-from dbal.groups_dao import GroupsDao
+from dbal._groups_dao import _GroupsDao
 
 
-class GroupsDaoEx(GroupsDao):
+class GroupsDaoEx(_GroupsDao):
 
     def __init__(self):
         super().__init__(ds())

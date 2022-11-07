@@ -3,12 +3,12 @@
 My hand-coded extension of generated class
 
 """
+from dbal._tasks_dao import _TasksDao
 from dbal.data_store import ds
 from dbal.task import Task
-from dbal.tasks_dao import TasksDao
 
 
-class TasksDaoEx(TasksDao):
+class TasksDaoEx(_TasksDao):
 
     def __init__(self):
         super().__init__(ds())
