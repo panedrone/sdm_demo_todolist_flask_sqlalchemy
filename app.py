@@ -1,13 +1,13 @@
 from dbal.data_store import DataStore, create_ds
 
 
-class _Singletons:
-    ds = None
+class _App:
+    ds = None  # Singleton
 
 
 def init_ds(db):
-    _Singletons.ds = create_ds(db)
+    _App.ds = create_ds(db)
 
 
 def ds() -> DataStore:
-    return _Singletons.ds
+    return _App.ds

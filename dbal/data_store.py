@@ -1,9 +1,6 @@
-import flask_sqlalchemy
-# import cx_Oracle
-
 """
 SQL DAL Maker Website: http://sqldalmaker.sourceforge.net
-This is an example of how to implement DataStore in Python + SQLAlchemy Raw SQL.
+This is an example of how to implement DataStore in Python + SQLAlchemy.
 Recent version: https://github.com/panedrone/sqldalmaker/blob/master/src/resources/data_store_sqlalchemy.py
 Copy-paste this code to your project and change it for your needs.
 Improvements are welcome: sqldalmaker@gmail.com
@@ -19,6 +16,11 @@ Successfully tested with:
     - cx_Oracle -------------- pip install cx_oracle
 
 """
+
+import flask_sqlalchemy
+
+
+# import cx_Oracle
 
 
 class OutParam:
@@ -74,7 +76,6 @@ class DataStore:
 
 
 if flask_sqlalchemy:
-
     Base = None
 
     Column = None
@@ -94,8 +95,10 @@ if flask_sqlalchemy:
     LargeBinary = None
 
 
-    def create_ds(db: flask_sqlalchemy.SQLAlchemy) -> DataStore:
-        global Base, Column, ForeignKey, SmallInteger, Integer, BigInteger, Float, DateTime, String, Boolean, LargeBinary
+    def create_ds(db: flask_sqlalchemy.SQLAlchemy) -> DataStore:  # factory
+
+        global Base, Column, ForeignKey, \
+            SmallInteger, Integer, BigInteger, Float, DateTime, String, Boolean, LargeBinary
 
         Base = db.Model
 
@@ -118,28 +121,28 @@ if flask_sqlalchemy:
         return _DS(db)
 
 
-else:
-    # the code below is for SQLAlchemy without flask
-
-    import sqlalchemy.ext.declarative
-    from sqlalchemy.orm import declarative_base, sessionmaker
-
-    Base = declarative_base()
-
-    Column = sqlalchemy.Column
-    ForeignKey = sqlalchemy.ForeignKey
-
-    SmallInteger = sqlalchemy.SmallInteger
-    Integer = sqlalchemy.Integer
-    BigInteger = sqlalchemy.BigInteger
-
-    Float = sqlalchemy.Float
-
-    DateTime = sqlalchemy.DateTime
-
-    String = sqlalchemy.String
-    Boolean = sqlalchemy.Boolean
-    LargeBinary = sqlalchemy.LargeBinary
+# else:
+#     # the code below is for SQLAlchemy without Flask
+#
+#     import sqlalchemy.ext.declarative
+#     from sqlalchemy.orm import declarative_base, sessionmaker
+#
+#     Base = declarative_base()
+#
+#     Column = sqlalchemy.Column
+#     ForeignKey = sqlalchemy.ForeignKey
+#
+#     SmallInteger = sqlalchemy.SmallInteger
+#     Integer = sqlalchemy.Integer
+#     BigInteger = sqlalchemy.BigInteger
+#
+#     Float = sqlalchemy.Float
+#
+#     DateTime = sqlalchemy.DateTime
+#
+#     String = sqlalchemy.String
+#     Boolean = sqlalchemy.Boolean
+#     LargeBinary = sqlalchemy.LargeBinary
 
 
 # if cx_Oracle:
@@ -172,37 +175,41 @@ class _DS(DataStore):
         postgresql = 3
         oracle = 4
 
-    def __init__(self, _db):
+    # def __init__(self): # constructor for SQLAlchemy without Flask
+    #     self.conn = None
+    #     self.transaction = None
+    #     self.engine = None
+    #     #########################################
+    #     # code below is for SQLAlchemy without flask
+    #     #
+    #     # self.engine = sqlalchemy.create_engine('sqlite:///todolist.sqlite')
+    #     self.engine_type = self.EngineType.sqlite3
+    #
+    #     # self.engine = sqlalchemy.create_engine('postgresql://postgres:sa@localhost/my-tests')
+    #     # self.engine_type = self.EngineType.postgresql
+    #
+    #     # https://www.tutorialguruji.com/dbms/how-do-i-execute-a-mysql-stored-procedure-in-a-sqlalchemy-scoped-session-to-return-a-single-result-set-of-data-for-flask-web-app/
+    #     # self.engine = sqlalchemy.create_engine('mysql+mysqlconnector://root:root@localhost/sakila')
+    #     # self.engine_type = self.EngineType.mysql
+    #
+    #     # user = 'MY_TESTS'
+    #     # pwd = 'sa'
+    #     # dsn = cx_Oracle.makedsn(
+    #     #     'localhost', 1521,
+    #     #     service_name="orcl"
+    #     #     # service_name='your_service_name_if_any'
+    #     # )
+    #     # self.engine = sqlalchemy.create_engine(f'oracle+cx_oracle://{user}:{pwd}@{dsn}', echo=False)
+    #     # self.engine_type = self.EngineType.oracle
+    #
+    #     # self.session = sessionmaker(bind=self.engine)()
+
+    def __init__(self, _db):  # constructor for Flask-SQLAlchemy
         self.conn = None
         self.transaction = None
         self.engine = None
-        #########################################
-        # code below is for SQLAlchemy without flask
-        #
-        # self.engine = sqlalchemy.create_engine('sqlite:///todolist.sqlite')
         self.engine_type = self.EngineType.sqlite3
-
-        # self.engine = sqlalchemy.create_engine('postgresql://postgres:sa@localhost/my-tests')
-        # self.engine_type = self.EngineType.postgresql
-
-        # https://www.tutorialguruji.com/dbms/how-do-i-execute-a-mysql-stored-procedure-in-a-sqlalchemy-scoped-session-to-return-a-single-result-set-of-data-for-flask-web-app/
-        # self.engine = sqlalchemy.create_engine('mysql+mysqlconnector://root:root@localhost/sakila')
-        # self.engine_type = self.EngineType.mysql
-
-        # user = 'MY_TESTS'
-        # pwd = 'sa'
-        # dsn = cx_Oracle.makedsn(
-        #     'localhost', 1521,
-        #     service_name="orcl"
-        #     # service_name='your_service_name_if_any'
-        # )
-        # self.engine = sqlalchemy.create_engine(f'oracle+cx_oracle://{user}:{pwd}@{dsn}', echo=False)
-        # self.engine_type = self.EngineType.oracle
-
-        # if db:
         self.session = _db.session
-        # else:
-        #     self.session = sessionmaker(bind=self.engine)()
 
     # code below is for SQLAlchemy without flask
     #

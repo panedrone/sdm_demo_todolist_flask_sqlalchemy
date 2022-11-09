@@ -5,7 +5,6 @@ import flask_sqlalchemy
 from flask import Blueprint
 from flask_restful import Api
 
-from api_resources import add_resources
 from app import init_ds
 
 flask_app = flask.Flask(__name__)
@@ -48,6 +47,18 @@ flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 @flask_app.route("/")
 def home():
     return flask.render_template("index.html")
+
+
+def add_resources(api):
+    from resources.group_resource import GroupResource
+    from resources.group_tasks_resource import GroupTasksResource
+    from resources.group_list_resource import GroupListResource
+    from resources.task_resource import TaskResource
+
+    api.add_resource(GroupListResource, "/groups")
+    api.add_resource(GroupResource, "/groups/<int:g_id>")
+    api.add_resource(GroupTasksResource, '/groups/<int:g_id>/tasks')
+    api.add_resource(TaskResource, '/tasks/<int:t_id>')
 
 
 if __name__ == "__main__":  # on running python main.py
