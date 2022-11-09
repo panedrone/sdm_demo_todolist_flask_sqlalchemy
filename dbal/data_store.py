@@ -1,105 +1,24 @@
-import os
-
 import flask_sqlalchemy
-
 # import cx_Oracle
 
-# if flask_sqlalchemy:
+"""
+SQL DAL Maker Website: http://sqldalmaker.sourceforge.net
+This is an example of how to implement DataStore in Python + SQLAlchemy Raw SQL.
+Recent version: https://github.com/panedrone/sqldalmaker/blob/master/src/resources/data_store_sqlalchemy.py
+Copy-paste this code to your project and change it for your needs.
+Improvements are welcome: sqldalmaker@gmail.com
 
-from app import app
+How to Execute Raw SQL in SQLAlchemy
+https://chartio.com/resources/tutorials/how-to-execute-raw-sql-in-sqlalchemy/
 
-dir_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+Successfully tested with:
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{dir_path}/todolist.sqlite"
+    - sqlite3 ---------------- built-in
+    - postgresql ------------- pip install psycopg2
+    - mysql+mysqlconnector --- pip install mysql-connector-python
+    - cx_Oracle -------------- pip install cx_oracle
 
-# add mysql-connector-python to requirements.txt
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:sa@localhost/todolist'
-
-# add psycopg2 to requirements.txt
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:sa@localhost/my-tests'
-
-# add cx_oracle to requirements.txt
-# if cx_Oracle:
-#     user = 'MY_TESTS'
-#     pwd = 'sa'
-#     dsn = cx_Oracle.makedsn(
-#         'localhost', 1521,
-#         service_name="orcl"
-#         # service_name='your_service_name_if_any'
-#     )
-#     app.config['SQLALCHEMY_DATABASE_URI'] = f'oracle+cx_oracle://{user}:{pwd}@{dsn}'
-
-# FSADeprecationWarning: SQLALCHEMY_TRACK_MODIFICATIONS adds
-# significant overhead and will be disabled by default in the future.
-# Set it to True or False to suppress this warning.
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db = flask_sqlalchemy.SQLAlchemy(app)
-
-Base = db.Model
-
-Column = db.Column
-ForeignKey = db.ForeignKey
-
-# if not cx_Oracle:
-SmallInteger = db.SmallInteger
-Integer = db.Integer
-BigInteger = db.BigInteger
-
-Float = db.Float
-
-DateTime = db.DateTime
-
-String = db.String
-Boolean = db.Boolean
-LargeBinary = db.LargeBinary
-
-
-# else:
-#     # the code below is for SQLAlchemy without flask
-#
-#     import sqlalchemy.ext.declarative
-#     from sqlalchemy.orm import declarative_base, sessionmaker
-#
-#     Base = declarative_base()
-#
-#     Column = sqlalchemy.Column
-#     ForeignKey = sqlalchemy.ForeignKey
-#
-#     SmallInteger = sqlalchemy.SmallInteger
-#     Integer = sqlalchemy.Integer
-#     BigInteger = sqlalchemy.BigInteger
-#
-#     Float = sqlalchemy.Float
-#
-#     DateTime = sqlalchemy.DateTime
-#
-#     String = sqlalchemy.String
-#     Boolean = sqlalchemy.Boolean
-#     LargeBinary = sqlalchemy.LargeBinary
-
-
-# if cx_Oracle:
-#     from sqlalchemy.dialects import oracle
-#
-#     SmallInteger = oracle.NUMBER
-#     Integer = oracle.NUMBER
-#     BigInteger = oracle.NUMBER
-#
-#     Numeric = oracle.NUMBER
-#     Float = oracle.NUMBER
-#
-#     # unlike default "Float", INSERT works correctly win Identity columns like
-#     # g_id = Column('G_ID', NUMBER, primary_key=True)
-#     NUMBER = oracle.NUMBER
-#
-#     # https://stackoverflow.com/questions/64903159/convert-oracle-datatypes-to-sqlalchemy-types
-#     # https://docs.sqlalchemy.org/en/14/dialects/oracle.html
-#     # Provide the oracle DATE type.
-#     #     This type has no special Python behavior, except that it subclasses
-#     #     :class:`_types.DateTime`; this is to suit the fact that the Oracle
-#     #     ``DATE`` type supports a time value.
-#     DateTime = oracle.DATE  # (timezone=False)
+"""
 
 
 class OutParam:
@@ -154,33 +73,106 @@ class DataStore:
     def query_all_rows(self, sql, params, callback) -> []: pass
 
 
+if flask_sqlalchemy:
+
+    Base = None
+
+    Column = None
+    ForeignKey = None
+
+    # if not cx_Oracle:
+    SmallInteger = None
+    Integer = None
+    BigInteger = None
+
+    Float = None
+
+    DateTime = None
+
+    String = None
+    Boolean = None
+    LargeBinary = None
+
+
+    def create_ds(db: flask_sqlalchemy.SQLAlchemy) -> DataStore:
+        global Base, Column, ForeignKey, SmallInteger, Integer, BigInteger, Float, DateTime, String, Boolean, LargeBinary
+
+        Base = db.Model
+
+        Column = db.Column
+        ForeignKey = db.ForeignKey
+
+        # if not cx_Oracle:
+        SmallInteger = db.SmallInteger
+        Integer = db.Integer
+        BigInteger = db.BigInteger
+
+        Float = db.Float
+
+        DateTime = db.DateTime
+
+        String = db.String
+        Boolean = db.Boolean
+        LargeBinary = db.LargeBinary
+
+        return _DS(db)
+
+
+else:
+    # the code below is for SQLAlchemy without flask
+
+    import sqlalchemy.ext.declarative
+    from sqlalchemy.orm import declarative_base, sessionmaker
+
+    Base = declarative_base()
+
+    Column = sqlalchemy.Column
+    ForeignKey = sqlalchemy.ForeignKey
+
+    SmallInteger = sqlalchemy.SmallInteger
+    Integer = sqlalchemy.Integer
+    BigInteger = sqlalchemy.BigInteger
+
+    Float = sqlalchemy.Float
+
+    DateTime = sqlalchemy.DateTime
+
+    String = sqlalchemy.String
+    Boolean = sqlalchemy.Boolean
+    LargeBinary = sqlalchemy.LargeBinary
+
+
+# if cx_Oracle:
+#     from sqlalchemy.dialects import oracle
+#
+#     SmallInteger = oracle.NUMBER
+#     Integer = oracle.NUMBER
+#     BigInteger = oracle.NUMBER
+#
+#     Numeric = oracle.NUMBER
+#     Float = oracle.NUMBER
+#
+#     # unlike default "Float", INSERT works correctly win Identity columns like
+#     # g_id = Column('G_ID', NUMBER, primary_key=True)
+#     NUMBER = oracle.NUMBER
+#
+#     # https://stackoverflow.com/questions/64903159/convert-oracle-datatypes-to-sqlalchemy-types
+#     # https://docs.sqlalchemy.org/en/14/dialects/oracle.html
+#     # Provide the oracle DATE type.
+#     #     This type has no special Python behavior, except that it subclasses
+#     #     :class:`_types.DateTime`; this is to suit the fact that the Oracle
+#     #     ``DATE`` type supports a time value.
+#     DateTime = oracle.DATE  # (timezone=False)
+
+
 class _DS(DataStore):
-    """
-    SQL DAL Maker Website: http://sqldalmaker.sourceforge.net
-    This is an example of how to implement DataStore in Python + SQLAlchemy Raw SQL.
-    Recent version: https://github.com/panedrone/sqldalmaker/blob/master/src/resources/data_store_sqlalchemy.py
-    Copy-paste this code to your project and change it for your needs.
-    Improvements are welcome: sqldalmaker@gmail.com
-
-    How to Execute Raw SQL in SQLAlchemy
-    https://chartio.com/resources/tutorials/how-to-execute-raw-sql-in-sqlalchemy/
-
-    Successfully tested with:
-
-        - sqlite3 ---------------- built-in
-        - postgresql ------------- pip install psycopg2
-        - mysql+mysqlconnector --- pip install mysql-connector-python
-        - cx_Oracle -------------- pip install cx_oracle
-
-    """
-
     class EngineType:
         sqlite3 = 1
         mysql = 2
         postgresql = 3
         oracle = 4
 
-    def __init__(self):
+    def __init__(self, _db):
         self.conn = None
         self.transaction = None
         self.engine = None
@@ -208,7 +200,7 @@ class _DS(DataStore):
         # self.engine_type = self.EngineType.oracle
 
         # if db:
-        self.session = db.session
+        self.session = _db.session
         # else:
         #     self.session = sessionmaker(bind=self.engine)()
 
@@ -580,10 +572,3 @@ def _assign_out_params(params, result_args):
     for i in range(len(params)):
         if isinstance(params[i], OutParam):
             params[i].value = result_args[i]
-
-
-_ds = _DS()
-
-
-def ds() -> DataStore:
-    return _ds

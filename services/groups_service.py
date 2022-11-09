@@ -1,10 +1,10 @@
-from dbal.data_store import ds
+from app import ds
 from dbal.group import Group
 from dbal.group_li import GroupLi
 from dbal.groups_dao_ex import GroupsDaoEx
 from dbal.task import Task
 
-_dao = GroupsDaoEx()
+_dao = GroupsDaoEx(ds())
 
 
 def get_all_groups():

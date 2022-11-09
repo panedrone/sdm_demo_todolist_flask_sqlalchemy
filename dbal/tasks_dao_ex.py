@@ -4,14 +4,13 @@ My hand-coded extension of generated class
 
 """
 from dbal._tasks_dao import _TasksDao
-from dbal.data_store import ds
 from dbal.task import Task
 
 
 class TasksDaoEx(_TasksDao):
 
-    def __init__(self):
-        super().__init__(ds())
+    def __init__(self, ds):
+        super().__init__(ds)
 
     def get_tasks_by_group(self, g_id):
         tasks = self.ds.filter(Task, {'g_id': g_id}).order_by(Task.t_date, Task.t_id).all()

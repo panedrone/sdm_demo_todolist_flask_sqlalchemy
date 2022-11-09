@@ -1,10 +1,10 @@
 from datetime import datetime
 
-from dbal.data_store import ds
+from app import ds
 from dbal.task import Task
 from dbal.tasks_dao_ex import TasksDaoEx
 
-_dao = TasksDaoEx()
+_dao = TasksDaoEx(ds())
 
 
 def get_group_tasks(g_id):
