@@ -1,12 +1,12 @@
 """
-SQL DAL Maker Website: http://sqldalmaker.sourceforge.net
-This is an example of how to implement DataStore in Python + SQLAlchemy.
-Recent version: https://github.com/panedrone/sqldalmaker/blob/master/src/resources/data_store_sqlalchemy.py
-Copy-paste this code to your project and change it for your needs.
-Improvements are welcome: sqldalmaker@gmail.com
 
-How to Execute Raw SQL in SQLAlchemy
-https://chartio.com/resources/tutorials/how-to-execute-raw-sql-in-sqlalchemy/
+SQL DAL Maker Website: http://sqldalmaker.sourceforge.net
+
+This is an example of how to implement DataStore in Python + SQLAlchemy.
+
+Recent version: https://github.com/panedrone/sqldalmaker/blob/master/src/resources/data_store_sqlalchemy.py
+
+Copy-paste this code to your project and change it for your needs.
 
 Successfully tested with:
 
@@ -14,6 +14,8 @@ Successfully tested with:
     - postgresql ------------- pip install psycopg2
     - mysql+mysqlconnector --- pip install mysql-connector-python
     - cx_Oracle -------------- pip install cx_oracle
+
+Improvements are welcome: sqldalmaker@gmail.com
 
 """
 
@@ -94,6 +96,38 @@ if flask_sqlalchemy:
     Boolean = None
     LargeBinary = None
 
+    # ======== Below is an example of pre-configuring of flask_sqlalchemy (do it somewhere in __main__). ========
+
+    # flask_app = flask.Flask(__name__)
+    #
+    # dir_path = os.path.dirname(os.path.realpath(__file__))
+    # flask_app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{dir_path}/todolist.sqlite"
+    #
+    # # add mysql-connector-python to requirements.txt
+    # # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:sa@localhost/todolist'
+    #
+    # # add psycopg2 to requirements.txt
+    # # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:sa@localhost/my-tests'
+    #
+    # # add cx_oracle to requirements.txt
+    # # if cx_Oracle:
+    # #     user = 'MY_TESTS'
+    # #     pwd = 'sa'
+    # #     dsn = cx_Oracle.makedsn(
+    # #         'localhost', 1521,
+    # #         service_name="orcl"
+    # #         # service_name='your_service_name_if_any'
+    # #     )
+    # #     app.config['SQLALCHEMY_DATABASE_URI'] = f'oracle+cx_oracle://{user}:{pwd}@{dsn}'
+    #
+    # # FSADeprecationWarning: SQLALCHEMY_TRACK_MODIFICATIONS adds
+    # # significant overhead and will be disabled by default in the future.
+    # # Set it to True or False to suppress this warning.
+    # flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    #
+    # db = flask_sqlalchemy.SQLAlchemy(flask_app)
+    #
+    # MyApp.ds = create_ds(db) # DataStore as an singleton
 
     def create_ds(db: flask_sqlalchemy.SQLAlchemy) -> DataStore:  # factory
 
@@ -155,8 +189,8 @@ if flask_sqlalchemy:
 #     Numeric = oracle.NUMBER
 #     Float = oracle.NUMBER
 #
-#     # unlike default "Float", INSERT works correctly win Identity columns like
-#     # g_id = Column('G_ID', NUMBER, primary_key=True)
+#     # unlike default "Float", INSERT works correctly with IDENTITY columns like
+#     # g_id = Column('G_ID', NUMBER, primary_key=True, autoincrement=True)
 #     NUMBER = oracle.NUMBER
 #
 #     # https://stackoverflow.com/questions/64903159/convert-oracle-datatypes-to-sqlalchemy-types
