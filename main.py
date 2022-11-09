@@ -11,7 +11,7 @@ flask_app = flask.Flask(__name__)
 
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 
-api = Api(blueprint)
+flask_restful_api = Api(blueprint)
 
 flask_app.register_blueprint(blueprint)
 
@@ -64,5 +64,5 @@ def add_resources(api):
 if __name__ == "__main__":  # on running python main.py
     db = flask_sqlalchemy.SQLAlchemy(flask_app)
     init_ds(db)
-    add_resources(api)
+    add_resources(flask_restful_api)
     flask_app.run(debug=True)
