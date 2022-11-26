@@ -2,3 +2,8 @@ SQLAlchemy
 Flask
 Flask-RESTFul
 Flask-SQLAlchemy
+
+# Flask-SQLAlchemy integration requires marshmallow-sqlalchemy to be installed.
+marshmallow-sqlalchemy
+
+flask-marshmallow

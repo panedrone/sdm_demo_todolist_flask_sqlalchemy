@@ -1,15 +1,24 @@
 import flask
 from flask_restful import Resource
 
-from rest_utils import json_response
+from app_marshmallow import ma
 from services.groups_service import *
+
+
+class GroupLiSchema(ma().Schema):
+    class Meta:
+        fields = ("g_id", "g_name", "g_tasks_count")
+        model = GroupLi
+
+
+group_li_schema = GroupLiSchema()
 
 
 class GroupListResource(Resource):
     @staticmethod
     def get():
         res = get_all_groups()
-        return json_response(res)
+        return group_li_schema.dump(res, many=True)
 
     @staticmethod
     def post():

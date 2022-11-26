@@ -96,7 +96,7 @@ if flask_sqlalchemy:
     Boolean = None
     LargeBinary = None
 
-    # ======== Below is an example of pre-configuring of flask_sqlalchemy (do it somewhere in __main__). ========
+    # ======== Below is an example of pre-configuring for flask_sqlalchemy (do it somewhere in __main__). ========
 
     # flask_app = flask.Flask(__name__)
     #
@@ -238,12 +238,12 @@ class _DS(DataStore):
     #
     #     # self.session = sessionmaker(bind=self.engine)()
 
-    def __init__(self, _db):  # constructor for Flask-SQLAlchemy
+    def __init__(self, db: flask_sqlalchemy.SQLAlchemy):
         self.conn = None
         self.transaction = None
         self.engine = None
         self.engine_type = self.EngineType.sqlite3
-        self.session = _db.session
+        self.session = db.session
 
     # code below is for SQLAlchemy without flask
     #

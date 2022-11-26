@@ -6,12 +6,13 @@ from flask import Blueprint
 from flask_restful import Api
 
 from app import init_ds
+from app_marshmallow import init_marshmallow
 
 flask_app = flask.Flask(__name__)
 
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 
-flask_restful_api = Api(blueprint)
+api = Api(blueprint)
 
 flask_app.register_blueprint(blueprint)
 
@@ -64,5 +65,6 @@ def add_resources(api):
 if __name__ == "__main__":  # on running python main.py
     db = flask_sqlalchemy.SQLAlchemy(flask_app)
     init_ds(db)
-    add_resources(flask_restful_api)
+    init_marshmallow(flask_app)
+    add_resources(api)
     flask_app.run(debug=True)
