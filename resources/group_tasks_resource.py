@@ -8,6 +8,7 @@ from services.tasks_service import *
 class TaskLiSchema(ma().Schema):
     class Meta:
         fields = ("t_id", "t_date", "t_subject", "t_priority")
+        # exclude = ("t_comments",)
         model = Task
 
 

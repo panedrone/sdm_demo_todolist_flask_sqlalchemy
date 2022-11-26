@@ -8,6 +8,7 @@ from services.tasks_service import *
 
 
 class TaskSchema(ma().Schema):
+    # t_date = fields.Str(required=True)
     t_date = fields.Str(required=True)
     t_subject = fields.Str(required=True)
     t_priority = fields.Int(required=True)
