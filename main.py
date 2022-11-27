@@ -5,8 +5,8 @@ import flask_sqlalchemy
 from flask import Blueprint
 from flask_restful import Api
 
-from app import init_ds
 from app_marshmallow import init_marshmallow
+from dbal.data_store import init_ds
 
 flask_app = flask.Flask(__name__)
 

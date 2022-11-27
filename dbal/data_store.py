@@ -20,6 +20,7 @@ Improvements are welcome: sqldalmaker@gmail.com
 """
 
 import flask_sqlalchemy
+import sqlalchemy.orm
 
 
 # import cx_Oracle
@@ -96,6 +97,7 @@ if flask_sqlalchemy:
     Boolean = None
     LargeBinary = None
 
+
     # ======== Below is an example of pre-configuring for flask_sqlalchemy (do it somewhere in __main__). ========
 
     # flask_app = flask.Flask(__name__)
@@ -129,7 +131,9 @@ if flask_sqlalchemy:
     #
     # MyApp.ds = create_ds(db) # DataStore as an singleton
 
-    def create_ds(db: flask_sqlalchemy.SQLAlchemy) -> DataStore:  # factory
+    def init_ds(db: flask_sqlalchemy.SQLAlchemy):
+        # _DS.Session = db.session()   ----------- RuntimeError: Working outside of application context.
+        _DS.Session = db.session
 
         global Base, Column, ForeignKey, \
             SmallInteger, Integer, BigInteger, Float, DateTime, String, Boolean, LargeBinary
@@ -151,8 +155,6 @@ if flask_sqlalchemy:
         String = db.String
         Boolean = db.Boolean
         LargeBinary = db.LargeBinary
-
-        return _DS(db)
 
 
 # else:
@@ -201,8 +203,14 @@ if flask_sqlalchemy:
 #     #     ``DATE`` type supports a time value.
 #     DateTime = oracle.DATE  # (timezone=False)
 
+def scoped_ds() -> DataStore:  # factory
+    return _DS()
+
 
 class _DS(DataStore):
+    # static field
+    Session: sqlalchemy.orm.scoped_session
+
     class EngineType:
         sqlite3 = 1
         mysql = 2
@@ -238,12 +246,23 @@ class _DS(DataStore):
     #
     #     # self.session = sessionmaker(bind=self.engine)()
 
-    def __init__(self, db: flask_sqlalchemy.SQLAlchemy):
+    def __init__(self):
         self.conn = None
         self.transaction = None
         self.engine = None
         self.engine_type = self.EngineType.sqlite3
-        self.session = db.session
+
+        # https://docs.sqlalchemy.org/en/13/orm/contextual.html
+        # >>> session_factory = sessionmaker(bind=some_engine)
+        # >>> Session = scoped_session(session_factory)
+        # The scoped_session object we’ve created will now call upon the sessionmaker when we “call” the registry:
+        # >>> some_session = Session()
+
+        self.session = _DS.Session()
+
+        # === panedrone: flask_sqlalchemy._teardown_session -->
+        # there may be more than 1 sessions in the registry because of parallel API calls
+        # (i.e 'GET /groups/<int:g_id>' and 'GET /groups/<int:g_id>/tasks')
 
     # code below is for SQLAlchemy without flask
     #
