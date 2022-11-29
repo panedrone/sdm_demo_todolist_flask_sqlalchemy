@@ -4,6 +4,7 @@ from dbal.data_store import scoped_ds
 from dbal.task import Task
 from dbal.tasks_dao_ex import TasksDaoEx
 
+
 def get_group_tasks(g_id):
     ds = scoped_ds()
     return TasksDaoEx(ds).get_tasks_by_group(g_id)
