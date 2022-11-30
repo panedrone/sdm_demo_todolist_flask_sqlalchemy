@@ -1,17 +1,18 @@
 """
-This file is a part of SQL DAL Maker project: https://sqldalmaker.sourceforge.net
-It demonstrates how to implement interface DataStore in Python + SQLAlchemy.
-More about DataStore: https://sqldalmaker.sourceforge.net/data_store.html
-Recent version: https://github.com/panedrone/sqldalmaker/blob/master/src/resources/data_store_sqlalchemy.py
+        This file is a part of SQL DAL Maker project: https://sqldalmaker.sourceforge.net
+        It demonstrates how to implement interface DataStore in Python + SQLAlchemy.
+        More about DataStore: https://sqldalmaker.sourceforge.net/data_store.html
+        Recent version: https://github.com/panedrone/sqldalmaker/blob/master/src/resources/data_store_sqlalchemy.py
 
-Successfully tested with:
-    - sqlite3 ---------------- built-in
-    - postgresql ------------- pip install psycopg2
-    - mysql+mysqlconnector --- pip install mysql-connector-python
-    - cx_Oracle -------------- pip install cx_oracle
+        Successfully tested with:
+            - sqlite3 ---------------- built-in
+            - postgresql ------------- pip install psycopg2
+            - mysql+mysqlconnector --- pip install mysql-connector-python
+            - cx_Oracle -------------- pip install cx_oracle
 
-Copy-paste this code to your project and change it for your needs.
-Improvements are welcome: sqldalmaker@gmail.com
+        Copy-paste this code to your project and change it for your needs.
+        Improvements are welcome: sqldalmaker@gmail.com
+
 """
 
 import flask_sqlalchemy  # remove it for a "not flask" version
@@ -34,15 +35,17 @@ class DataStore:
 
     def rollback(self): pass
 
-    # Helpers
+    # ORM-based Helpers
 
-    def filter(self, cls, params=None): pass
+    def filter(self, cls, params: dict = None): pass
 
-    def delete_by_filter(self, cls, params=None) -> int: pass
+    def delete_by_filter(self, cls, params: dict = None) -> int: pass
 
-    def get_one_raw(self, cls, params=None): pass
+    def update_by_filter(self, cls, data: dict, params: dict = None) -> int: pass
 
-    def get_all_raw(self, cls, params=None) -> []: pass
+    def get_one_raw(self, cls, params: dict = None): pass
+
+    def get_all_raw(self, cls, params: dict = None) -> []: pass
 
     # ORM-based CRUD
 
@@ -226,6 +229,10 @@ if flask_sqlalchemy:
 #     #     :class:`_types.DateTime`; this is to suit the fact that the Oracle
 #     #     ``DATE`` type supports a time value.
 #     DateTime = oracle.DATE  # (timezone=False)
+#
+#     String = oracle.NVARCHAR
+#     Boolean = oracle.LONG
+#     LargeBinary = oracle.BLOB
 
 def scoped_ds() -> DataStore:  # factory
     return _DS()
@@ -238,7 +245,9 @@ class _DS(DataStore):
         postgresql = 3
         oracle = 4
 
-    # def __init__(self): # constructor for SQLAlchemy without Flask
+    # constructor for SQLAlchemy without flask + session as singleton
+
+    # def __init__(self):
     #     self.conn = None
     #     self.transaction = None
     #     self.engine = None
@@ -264,8 +273,9 @@ class _DS(DataStore):
     #     # )
     #     # self.engine = sqlalchemy.create_engine(f'oracle+cx_oracle://{user}:{pwd}@{dsn}', echo=False)
     #     # self.engine_type = self.EngineType.oracle
-    #
-    #     # self.session = sessionmaker(bind=self.engine)()  # TODO engine as singleton + scoped_session
+
+    #     # TODO engine+sessionmaker as singletons + separate scoped_session for separate web-requests
+    #     # self.session = sessionmaker(bind=self.engine)()
 
     # static field
     Session: sqlalchemy.orm.scoped_session
@@ -282,13 +292,19 @@ class _DS(DataStore):
         # The scoped_session object we’ve created will now call upon the sessionmaker when we “call” the registry:
         # >>> some_session = Session()
 
-        self.session = _DS.Session()
+        self.session: sqlalchemy.orm.session = _DS.Session()
 
-        # === panedrone: flask_sqlalchemy._teardown_session -->
-        # there may be more than 1 sessions in the registry because of parallel API calls
-        # (i.e 'GET /groups/<int:g_id>' + 'GET /groups/<int:g_id>/tasks')
+    # constructor used in FastAPI demo
+    # https://github.com/panedrone/sdm_demo_todolist_fastapi_sqlalchemy
 
-    # code below is for SQLAlchemy without flask
+    # def __init__(self, session: sqlalchemy.orm.Session):
+    #     self.conn = None
+    #     self.transaction = None
+    #     self.engine = None
+    #     self.engine_type = self.EngineType.sqlite3
+    #     self.session: sqlalchemy.orm.session = session
+
+    # the code below is for SQLAlchemy without flask + session as singleton (no scoped sessions)
     #
     # def open(self):
     #     self.conn = self.engine.connect()
@@ -368,11 +384,15 @@ class _DS(DataStore):
             found = self.session.query(cls)
         return found
 
-    def delete_by_filter(self, cls, params=None) -> int:
+    def delete_by_filter(self, cls, params: dict = None) -> int:
         found = self.filter(cls, params)
         #  :return: the count of rows matched as returned by the database's
         #           "row count" feature.
         return found.delete()  # found is a BaseQuery, no fetch!
+
+    def update_by_filter(self, cls, data: dict, params: dict = None) -> int:
+        found = self.filter(cls, params)
+        return found.update(values=data)  # found is a BaseQuery, no fetch!
 
     def create_one(self, instance) -> None:
         self.session.add(instance)  # return None
