@@ -2,6 +2,7 @@ import flask
 from flask_restful import Resource
 
 from app_marshmallow import ma
+from dbal.group_li import GroupLi
 from services.groups_service import *
 
 

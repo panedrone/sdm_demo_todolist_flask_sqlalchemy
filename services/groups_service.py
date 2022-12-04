@@ -1,13 +1,12 @@
 from dbal.data_store import scoped_ds
 from dbal.group import Group
-from dbal.group_li import GroupLi
 from dbal.groups_dao_ex import GroupsDaoEx
 from dbal.task import Task
 
 
 def get_all_groups():
     ds = scoped_ds()
-    return ds.get_all_raw(GroupLi)
+    return GroupsDaoEx(ds).get_all_groups()
 
 
 def get_group(g_id):
@@ -25,9 +24,6 @@ async def create_group(g_name):
 
 async def update_group(g_id, g_name):
     ds = scoped_ds()
-    # group = _dao.read_group(g_id)
-    # group.g_name = g_name
-    # _dao.update_group(group)
     GroupsDaoEx(ds).rename(g_id, g_name)
     ds.commit()
 
