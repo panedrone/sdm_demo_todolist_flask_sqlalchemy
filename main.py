@@ -1,3 +1,4 @@
+import logging
 import os
 
 import flask
@@ -64,7 +65,13 @@ def add_resources(api):
 
 if __name__ == "__main__":  # on running python main.py
     db = flask_sqlalchemy.SQLAlchemy(flask_app)
+
     init_ds(db)
     init_marshmallow(flask_app)
+
     add_resources(api)
+
+    logging.basicConfig()
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+
     flask_app.run(debug=True)
