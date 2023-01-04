@@ -6,6 +6,6 @@ Flask-SQLAlchemy
 marshmallow
 
 # Flask-SQLAlchemy integration requires marshmallow-sqlalchemy to be installed.
-marshmallow-sqlalchemy
+# marshmallow-sqlalchemy
 
-flask-marshmallow
+# flask-marshmallow

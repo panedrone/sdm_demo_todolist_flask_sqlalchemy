@@ -6,7 +6,6 @@ import flask_sqlalchemy
 from flask import Blueprint
 from flask_restful import Api
 
-from app_marshmallow import init_marshmallow
 from dbal.data_store import init_ds
 
 flask_app = flask.Flask(__name__)
@@ -67,7 +66,7 @@ if __name__ == "__main__":  # on running python main.py
     db = flask_sqlalchemy.SQLAlchemy(flask_app)
 
     init_ds(db)
-    init_marshmallow(flask_app)
+    # init_marshmallow(flask_app)
 
     add_resources(api)
 

@@ -15,20 +15,20 @@ def get_group(g_id):
     return group
 
 
-async def create_group(g_name):
+def create_group(g_name):
     ds = scoped_ds()
     group = Group(g_name=g_name)
     GroupsDaoEx(ds).create_group(group)
     ds.commit()
 
 
-async def update_group(g_id, g_name):
+def update_group(g_id, g_name):
     ds = scoped_ds()
     GroupsDaoEx(ds).rename(g_id, g_name)
     ds.commit()
 
 
-async def delete_group(g_id):
+def delete_group(g_id):
     ds = scoped_ds()
     ds.delete_by_filter(Task, {"g_id": g_id})
     rows_deleted = GroupsDaoEx(ds).delete_group(g_id)
