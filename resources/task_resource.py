@@ -4,21 +4,35 @@ import flask
 import marshmallow as mm
 from flask import Response
 from flask_restful import Resource
-from marshmallow.validate import Length
+from marshmallow import ValidationError
+from marshmallow.validate import Length, Validator
 
 from services.tasks_service import *
+
+
+class MyDateStringValidator(Validator):
+    def __init__(self, error: str):
+        self.error = error
+
+    def __call__(self, value: str) -> str:
+        try:
+            datetime.strptime(value, '%Y-%m-%d').date()
+        except Exception:
+            raise ValidationError(self.error)
+
+        return value
 
 
 # noinspection PyTypeChecker
 class TaskSchema(mm.Schema):
     # https://stackoverflow.com/questions/54345070/python-marshmallow-not-detecting-error-in-required-field
-    # "required" just means "exists in JSON"
+    # "required" just means "key->value exists in JSON"
     t_date = mm.fields.Str(required=True,
                            allow_none=False,
-                           validate=Length(min=1, error="Empty date is not allowed"))
+                           validate=MyDateStringValidator("Task date format expected like '2022-12-31'"))
     t_subject = mm.fields.Str(required=True,
                               allow_none=False,
-                              validate=Length(min=1, error="Empty subject is not allowed"))
+                              validate=Length(min=1, error="Task subject may not be empty"))
     t_priority = mm.fields.Int(required=True)
     t_comments = mm.fields.Str(required=False)
 
