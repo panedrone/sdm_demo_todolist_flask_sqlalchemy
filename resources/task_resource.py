@@ -28,8 +28,8 @@ class MyDateStringValidator(Validator):
 class TaskSchema(mm.Schema):
     # https://stackoverflow.com/questions/54345070/python-marshmallow-not-detecting-error-in-required-field
     # "required" just means "key->value exists in JSON"
-    t_date = mm.fields.Str(# required=True,
-                           # allow_none=False,
+    t_date = mm.fields.Str(required=True,
+                           allow_none=False,
                            validate=MyDateStringValidator("Task date format expected is 'yyyy-mm-dd' -> '2022-01-01'"))
     t_subject = mm.fields.Str(required=True,
                               allow_none=False,
