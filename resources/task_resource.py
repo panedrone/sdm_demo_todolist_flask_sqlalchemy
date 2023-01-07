@@ -16,10 +16,11 @@ class MyDateStringValidator(Validator):
 
     def __call__(self, value: str) -> str:
         try:
-            datetime.strptime(value, '%Y-%m-%d').date()
+            dt = datetime.strptime(value, '%Y-%m-%d').date()
         except Exception:
             raise ValidationError(self.error)
-
+        if str(dt) != value:
+            raise ValidationError(self.error)
         return value
 
 
@@ -27,12 +28,12 @@ class MyDateStringValidator(Validator):
 class TaskSchema(mm.Schema):
     # https://stackoverflow.com/questions/54345070/python-marshmallow-not-detecting-error-in-required-field
     # "required" just means "key->value exists in JSON"
-    t_date = mm.fields.Str(required=True,
-                           allow_none=False,
-                           validate=MyDateStringValidator("Task date format expected like '2022-12-31'"))
+    t_date = mm.fields.Str(# required=True,
+                           # allow_none=False,
+                           validate=MyDateStringValidator("Task date format expected is 'yyyy-mm-dd' -> '2022-01-01'"))
     t_subject = mm.fields.Str(required=True,
                               allow_none=False,
-                              validate=Length(min=1, error="Task subject may not be empty"))
+                              validate=Length(min=1, max=256, error="Task subject length expected is 1..256"))
     t_priority = mm.fields.Int(required=True,
                                validate=Range(1, 10, error="Task priority should be an integer of range 1..10"))
     t_comments = mm.fields.Str(required=False)

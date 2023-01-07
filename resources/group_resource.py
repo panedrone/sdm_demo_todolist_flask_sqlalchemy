@@ -15,7 +15,7 @@ class GroupSchema(mm.Schema):
     # "required" just means "exists in JSON"
     g_name = mm.fields.Str(required=True,
                            allow_none=False,
-                           validate=Length(min=1, error="Group name may not be empty"))
+                           validate=Length(min=1, max=256, error="Group name length expected is 1..256"))
 
     # class Meta:
     #     fields = ("g_id", "g_name")
