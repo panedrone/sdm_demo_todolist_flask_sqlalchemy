@@ -15,7 +15,7 @@ class NewTaskSchema(mm.Schema):
     # "required" just means "exists in JSON"
     t_subject = mm.fields.Str(required=True,
                               allow_none=False,
-                              validate=Length(min=1, error="Subject is missing"))
+                              validate=Length(min=1, error="Empty subject is not allowed"))
 
     # class Meta:
     #     fields = ("g_name",)
@@ -46,3 +46,4 @@ class GroupTasksResource(Resource):
             )
         t_subject = data["t_subject"]
         create_task(g_id, t_subject)
+        return Response(status=201)

@@ -15,7 +15,7 @@ class NewGroupSchema(mm.Schema):
     # "required" just means "exists in JSON"
     g_name = mm.fields.Str(required=True,
                            allow_none=False,
-                           validate=Length(min=1, error="Group name is missing"))
+                           validate=Length(min=1, error="Empty name is not allowed"))
 
     # class Meta:
     #     fields = ("g_name",)
@@ -44,3 +44,4 @@ class GroupListResource(Resource):
             )
         g_name = data["g_name"]
         create_group(g_name)
+        return Response(status=201)

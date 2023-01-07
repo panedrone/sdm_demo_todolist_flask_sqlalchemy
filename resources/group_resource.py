@@ -15,7 +15,7 @@ class GroupSchema(mm.Schema):
     # "required" just means "exists in JSON"
     g_name = mm.fields.Str(required=True,
                            allow_none=False,
-                           validate=Length(min=1, error="Group name is missing"))
+                           validate=Length(min=1, error="Empty name is not allowed"))
 
     # class Meta:
     #     fields = ("g_id", "g_name")
@@ -47,3 +47,4 @@ class GroupResource(Resource):
     @staticmethod
     def delete(g_id):
         delete_group(g_id)
+        return Response(status=204)
