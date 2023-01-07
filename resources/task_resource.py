@@ -5,7 +5,7 @@ import marshmallow as mm
 from flask import Response
 from flask_restful import Resource
 from marshmallow import ValidationError
-from marshmallow.validate import Length, Validator
+from marshmallow.validate import Length, Validator, Range
 
 from services.tasks_service import *
 
@@ -33,7 +33,8 @@ class TaskSchema(mm.Schema):
     t_subject = mm.fields.Str(required=True,
                               allow_none=False,
                               validate=Length(min=1, error="Task subject may not be empty"))
-    t_priority = mm.fields.Int(required=True)
+    t_priority = mm.fields.Int(required=True,
+                               validate=Range(1, 10, error="Task priority should be an integer of range 1..10"))
     t_comments = mm.fields.Str(required=False)
 
     # class Meta:
