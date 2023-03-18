@@ -3,14 +3,14 @@ import os
 
 import flask
 import flask_sqlalchemy
-from flask import Blueprint
+from flask import Blueprint, send_from_directory
 from flask_restful import Api
 
 from dbal.data_store import init_ds
 
 flask_app = flask.Flask(__name__)
 
-blueprint = Blueprint('api', __name__, url_prefix='/api')
+blueprint = Blueprint('api', __name__, url_prefix='')
 
 api = Api(blueprint)
 
@@ -47,19 +47,24 @@ flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 @flask_app.route("/")
 def home():
-    return flask.render_template("index.html")
+    return send_from_directory('static', "index.html")
 
 
-def add_resources(api):
+@flask_app.route('/static')
+def get_static(path):
+    return send_from_directory('static', path)
+
+
+def add_resources(root):
     from resources.group_resource import GroupResource
     from resources.group_tasks_resource import GroupTasksResource
     from resources.group_list_resource import GroupListResource
     from resources.task_resource import TaskResource
 
-    api.add_resource(GroupListResource, "/groups")
-    api.add_resource(GroupResource, "/groups/<int:g_id>")
-    api.add_resource(GroupTasksResource, '/groups/<int:g_id>/tasks')
-    api.add_resource(TaskResource, '/tasks/<int:t_id>')
+    root.add_resource(GroupListResource, "/groups")
+    root.add_resource(GroupResource, "/groups/<int:g_id>")
+    root.add_resource(GroupTasksResource, '/groups/<int:g_id>/tasks')
+    root.add_resource(TaskResource, '/tasks/<int:t_id>')
 
 
 if __name__ == "__main__":  # on running python main.py
