@@ -1,5 +1,5 @@
 SQLAlchemy
-Flask~=2.2.2
+Flask
 Flask-RESTFul
 Flask-SQLAlchemy
 

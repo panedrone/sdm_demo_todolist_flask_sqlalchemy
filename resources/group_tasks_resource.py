@@ -11,21 +11,14 @@ from services.tasks_service import *
 
 # noinspection PyTypeChecker
 class NewTaskSchema(mm.Schema):
-    # https://stackoverflow.com/questions/54345070/python-marshmallow-not-detecting-error-in-required-field
-    # "required" just means "exists in JSON"
     t_subject = mm.fields.Str(required=True,
                               allow_none=False,
-                              validate=Length(min=1, error="Task subject may not be empty"))
-
-    # class Meta:
-    #     fields = ("g_name",)
+                              validate=Length(min=1, error="Task subject a string[1..256] expected"))
 
 
 class TaskLiSchema(mm.Schema):
     class Meta:
         fields = ("t_id", "t_date", "t_subject", "t_priority")
-        # exclude = ("t_comments",)
-        # model = Task
 
 
 class GroupTasksResource(Resource):
