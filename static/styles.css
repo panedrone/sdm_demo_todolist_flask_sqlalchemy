@@ -21,7 +21,7 @@ table.bg td {
 
 .form-label {
     padding: 7px;
-    width: 80px;
+    width: 1%;
 }
 
 input {
@@ -97,4 +97,12 @@ div.title {
 .section td {
     padding: 8px;
     border: solid 1px #bbb;
+}
+
+.w1 {
+    width: 1px;
+}
+
+.w100 {
+    width: 100%;
 }

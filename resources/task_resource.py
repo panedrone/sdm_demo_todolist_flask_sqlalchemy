@@ -25,6 +25,7 @@ class MyDateStringValidator(Validator):
 
 # noinspection PyTypeChecker
 class TaskSchema(mm.Schema):
+    t_id = mm.fields.Str(required=True)
     t_date = mm.fields.Str(required=True,
                            allow_none=False,
                            validate=MyDateStringValidator("Task date format expected is 'yyyy-mm-dd' -> '2022-01-01'"))

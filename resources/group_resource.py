@@ -11,6 +11,7 @@ from services.groups_service import *
 
 # noinspection PyTypeChecker
 class GroupSchema(mm.Schema):
+    g_id = mm.fields.Str(required=True)
     g_name = mm.fields.Str(required=True,
                            allow_none=False,
                            validate=Length(min=1, max=256, error="Group name a string[1..256] expected"))
