@@ -18,7 +18,7 @@
                 <table>
                     <tr>
                         <td>
-                            <table id="groups_table" class="section">
+                            <table class="section">
                                 <tr>
                                     <th>Group</th>
                                     <th>Tasks Count</th>
@@ -38,7 +38,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <form method="post" enctype="multipart/form-data" name="form_create_group">
+                            <form method="post" enctype="multipart/form-data">
                                 <table class="controls">
                                     <tr>
                                         <td>
@@ -62,13 +62,12 @@
                 <table id="group_details" style="visibility: hidden">
                     <tr>
                         <td>
-                            <form method="post" id="form_update_group">
+                            <form method="post">
                                 <table class="controls">
                                     <tr>
                                         <td>
                                             <label>
-                                                <input id="g_name2" class="group-header" type="text" name="g_name"
-                                                       v-model="current_group.g_name"/>
+                                                <input type="text" v-model="current_group.g_name"/>
                                             </label>
                                         </td>
                                         <td class="w1">
@@ -82,8 +81,9 @@
                                             </a>
                                         </td>
                                         <td class="w1">
-                                            <a href="javascript:hideGroupDetails2();"><input type="button"
-                                                                                             value="&lt;"/></a>
+                                            <a href="javascript:hideGroupDetails2();">
+                                                <input type="button" value="&lt;"/>
+                                            </a>
                                         </td>
                                     </tr>
                                 </table>
@@ -92,7 +92,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <table id="tasks_table" class="section">
+                            <table class="section">
                                 <tr>
                                     <th>Date</th>
                                     <th>Subject</th>
@@ -117,7 +117,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <form method="post" id="form_create_task">
+                            <form method="post">
                                 <table class="controls">
                                     <tr>
                                         <td>
