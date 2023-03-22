@@ -67,8 +67,12 @@ def add_resources(root):
     root.add_resource(TaskResource, '/tasks/<int:t_id>')
 
 
-if __name__ == "__main__":  # on running python main.py
-    db = flask_sqlalchemy.SQLAlchemy(flask_app)
+if __name__ == "__main__":
+    session_options = {
+        'autocommit': False,
+        'autoflush': False,
+    }
+    db = flask_sqlalchemy.SQLAlchemy(flask_app, session_options=session_options)
 
     init_ds(db)
     # init_marshmallow(flask_app)
