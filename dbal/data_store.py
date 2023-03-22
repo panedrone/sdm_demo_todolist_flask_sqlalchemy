@@ -287,7 +287,7 @@ if flask_sqlalchemy:
 #     Float = oracle.NUMBER
 #
 #     # unlike default "Float", INSERT works correctly with IDENTITY columns like
-#     # g_id = Column('G_ID', NUMBER, primary_key=True, autoincrement=True)
+#     # p_id = Column('G_ID', NUMBER, primary_key=True, autoincrement=True)
 #     NUMBER = oracle.NUMBER
 #
 #     # https://stackoverflow.com/questions/64903159/convert-oracle-datatypes-to-sqlalchemy-types
@@ -419,7 +419,7 @@ class _DS(DataStore):
         """
         :param cls: An __abstract_ model class or plain DTO class containing a static field "SQL"
         :param params: [] the values of SQL params
-        :return: [dict]: an array of dict like [{'g_id': 21, 'g_name': 'Project 1'}, {'g_id': 22, 'g_name': 'Project 2']
+        :return: [dict]: an array of dict like [{'p_id': 21, 'p_name': 'Project 1'}, {'p_id': 22, 'p_name': 'Project 2']
         """
         # rows = self.engine.execute(cls.SQL)  # .fetchall()
         # performs -->

@@ -11,7 +11,7 @@ dto.xml
 ```xml
 <dto-class name="sa-Group" ref="groups"/>
 
-<dto-class name="sa-GroupLi" ref="get_groups.sql"/>
+<dto-class name="sa-GroupLi" ref="get_projects.sql"/>
 
 <dto-class name="sa-Task" ref="tasks"/>
 
@@ -38,32 +38,31 @@ Generated code in action:
 ```go
 def get_all_groups():
     ds = scoped_ds()
-    return GroupsDaoEx(ds).get_all_groups()
+    return ProjectsDaoEx(ds).get_all_groups()
 
 
-def get_group(g_id):
+def get_project(p_id):
     ds = scoped_ds()
-    group = GroupsDaoEx(ds).read_group(g_id)
+    group = ProjectsDaoEx(ds).read_group(p_id)
     return group
 
 
-def create_group(g_name):
+def create_project(p_name):
     ds = scoped_ds()
-    group = Group(g_name=g_name)
-    GroupsDaoEx(ds).create_group(group)
+    group = Group(p_name=p_name)
+    ProjectsDaoEx(ds).create_group(group)
     ds.commit()
 
 
-def update_group(g_id, g_name):
+def update_project(p_id, p_name):
     ds = scoped_ds()
-    GroupsDaoEx(ds).rename(g_id, g_name)
+    ProjectsDaoEx(ds).rename(p_id, p_name)
     ds.commit()
 
 
-def delete_group(g_id):
+def delete_project(p_id):
     ds = scoped_ds()
-    ds.delete_by_filter(Task, {"g_id": g_id})
-    rows_deleted = GroupsDaoEx(ds).delete_group(g_id)
-    print(f"rows_deleted: {rows_deleted}")
+    ds.delete_by_filter(Task, {"p_id": p_id})
+    ProjectsDaoEx(ds).delete_group(p_id)
     ds.commit()
 ```

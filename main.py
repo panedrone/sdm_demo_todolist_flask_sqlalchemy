@@ -56,14 +56,14 @@ def get_static(path):
 
 
 def add_resources(root):
-    from resources.group_resource import GroupResource
-    from resources.group_tasks_resource import GroupTasksResource
-    from resources.group_list_resource import GroupListResource
+    from resources.project_resource import ProjectResource
+    from resources.project_tasks_resource import ProjectTasksResource
+    from resources.project_list_resource import ProjectListResource
     from resources.task_resource import TaskResource
 
-    root.add_resource(GroupListResource, "/groups")
-    root.add_resource(GroupResource, "/groups/<int:g_id>")
-    root.add_resource(GroupTasksResource, '/groups/<int:g_id>/tasks')
+    root.add_resource(ProjectListResource, "/projects")
+    root.add_resource(ProjectResource, "/projects/<int:p_id>")
+    root.add_resource(ProjectTasksResource, '/projects/<int:p_id>/tasks')
     root.add_resource(TaskResource, '/tasks/<int:t_id>')
 
 

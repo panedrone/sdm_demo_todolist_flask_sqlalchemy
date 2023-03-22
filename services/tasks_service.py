@@ -5,21 +5,21 @@ from dbal.task import Task
 from dbal.tasks_dao_ex import TasksDaoEx
 
 
-def get_group_tasks(g_id):
+def get_tasks_by_project(p_id):
     ds = scoped_ds()
-    return TasksDaoEx(ds).get_tasks_by_group(g_id)
+    return TasksDaoEx(ds).get_tasks_by_project(p_id)
 
 
-def get_task(t_id):
+def read_task(t_id):
     ds = scoped_ds()
     task = TasksDaoEx(ds).read_task(t_id)
     return task
 
 
-def create_task(g_id, t_subject):
+def create_task(p_id, t_subject):
     ds = scoped_ds()
     task = Task()
-    task.g_id = g_id
+    task.p_id = p_id
     task.t_subject = t_subject
     now = datetime.now()
     dt_string = now.strftime("%Y-%m-%d")

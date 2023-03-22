@@ -21,14 +21,14 @@ class TaskLiSchema(mm.Schema):
         fields = ("t_id", "t_date", "t_subject", "t_priority")
 
 
-class GroupTasksResource(Resource):
+class ProjectTasksResource(Resource):
     @staticmethod
-    def get(g_id):
-        res = get_group_tasks(g_id)
+    def get(p_id):
+        res = get_tasks_by_project(p_id)
         return TaskLiSchema().dump(res, many=True)
 
     @staticmethod
-    def post(g_id):
+    def post(p_id):
         req_json = flask.request.json
         try:
             data = NewTaskSchema().load(req_json)
@@ -38,5 +38,5 @@ class GroupTasksResource(Resource):
                 status=400,
             )
         t_subject = data["t_subject"]
-        create_task(g_id, t_subject)
+        create_task(p_id, t_subject)
         return Response(status=201)

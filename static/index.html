@@ -20,17 +20,17 @@
                         <td>
                             <table class="section">
                                 <tr>
-                                    <th>Group</th>
+                                    <th>Project</th>
                                     <th>Tasks Count</th>
                                 </tr>
-                                <tr v-for="group in $data.groups">
+                                <tr v-for="project in $data.projects">
                                     <td>
-                                        <a href="#" @click="renderGroupDetails(group.g_id)">
-                                            {{ group.g_name }}
+                                        <a href="#" @click="renderGroupDetails(project.p_id)">
+                                            {{ project.p_name }}
                                         </a>
                                     </td>
                                     <td style="text-align: center;width: 80px;">
-                                        {{ group.g_tasks_count }}
+                                        {{ project.p_tasks_count }}
                                     </td>
                                 </tr>
                             </table>
@@ -43,7 +43,7 @@
                                     <tr>
                                         <td>
                                             <label>
-                                                <input type="text" v-model="g_name"/>
+                                                <input type="text" v-model="p_name"/>
                                             </label>
                                         </td>
                                         <td class="w1">
@@ -67,7 +67,7 @@
                                     <tr>
                                         <td>
                                             <label>
-                                                <input type="text" class="group-header" v-model="current_group.g_name"/>
+                                                <input type="text" class="group-header" v-model="current_project.p_name"/>
                                             </label>
                                         </td>
                                         <td class="w1">

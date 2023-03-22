@@ -6,42 +6,42 @@ from flask import Response
 from flask_restful import Resource
 from marshmallow.validate import Length
 
-from services.groups_service import *
+from services.projects_service import *
 
 
 # noinspection PyTypeChecker
-class NewGroupSchema(mm.Schema):
+class NewProjectSchema(mm.Schema):
     # https://stackoverflow.com/questions/54345070/python-marshmallow-not-detecting-error-in-required-field
     # "required" just means "exists in JSON"
-    g_name = mm.fields.Str(required=True,
+    p_name = mm.fields.Str(required=True,
                            allow_none=False,
                            validate=Length(min=1, max=256, error="Group name a string[1..256] expected"))
 
     # class Meta:
-    #     fields = ("g_name",)
+    #     fields = ("p_name",)
 
 
-class GroupLiSchema(mm.Schema):
+class ProjectLiSchema(mm.Schema):
     class Meta:
-        fields = ("g_id", "g_name", "g_tasks_count")
+        fields = ("p_id", "p_name", "p_tasks_count")
 
 
-class GroupListResource(Resource):
+class ProjectListResource(Resource):
     @staticmethod
     def get():
-        res = get_all_groups()
-        return GroupLiSchema().dump(res, many=True)
+        res = get_all_projects()
+        return ProjectLiSchema().dump(res, many=True)
 
     @staticmethod
     def post():
         req_json = flask.request.json
         try:
-            data = NewGroupSchema().load(req_json)
+            data = NewProjectSchema().load(req_json)
         except mm.ValidationError as error:
             return Response(
                 json.dumps(error.messages),
                 status=400,
             )
-        g_name = data["g_name"]
-        create_group(g_name)
+        p_name = data["p_name"]
+        create_project(p_name)
         return Response(status=201)

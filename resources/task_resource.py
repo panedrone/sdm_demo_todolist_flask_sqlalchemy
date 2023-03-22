@@ -37,14 +37,14 @@ class TaskSchema(mm.Schema):
     t_comments = mm.fields.Str(required=False)
 
     # class Meta:
-    #     fields = ("t_id", "g_id", "t_date", "t_subject", "t_priority", "t_comments")
+    #     fields = ("t_id", "p_id", "t_date", "t_subject", "t_priority", "t_comments")
     #     model = Task
 
 
 class TaskResource(Resource):
     @staticmethod
     def get(t_id):
-        task = get_task(t_id)
+        task = read_task(t_id)
         return TaskSchema().dump(task)
 
     @staticmethod
