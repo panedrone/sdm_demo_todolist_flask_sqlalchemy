@@ -9,9 +9,9 @@ Front-end is written in Vue.js, SQLite3 is used as database.
 
 dto.xml
 ```xml
-<dto-class name="sa-Group" ref="groups"/>
+<dto-class name="sa-Project" ref="groups"/>
 
-<dto-class name="sa-GroupLi" ref="get_projects.sql"/>
+<dto-class name="sa-ProjectLi" ref="get_projects.sql"/>
 
 <dto-class name="sa-Task" ref="tasks"/>
 
@@ -26,9 +26,9 @@ dto.xml
 
 </dto-class>
 ```
-GroupsDao.xml
+ProjectsDao.xml
 ```xml
-<crud dto="sa-Group" table="groups"/>
+<crud dto="sa-Project" table="groups"/>
 ```
 TasksDao.xml
 ```xml
@@ -49,7 +49,7 @@ def get_project(p_id):
 
 def create_project(p_name):
     ds = scoped_ds()
-    group = Group(p_name=p_name)
+    group = Project(p_name=p_name)
     ProjectsDaoEx(ds).create_group(group)
     ds.commit()
 
