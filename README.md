@@ -9,7 +9,7 @@ Front-end is written in Vue.js, SQLite3 is used as database.
 
 dto.xml
 ```xml
-<dto-class name="sa-Project" ref="groups"/>
+<dto-class name="sa-Project" ref="projects"/>
 
 <dto-class name="sa-ProjectLi" ref="get_projects.sql"/>
 
@@ -28,7 +28,7 @@ dto.xml
 ```
 ProjectsDao.xml
 ```xml
-<crud dto="sa-Project" table="groups"/>
+<crud dto="sa-Project" table="projects"/>
 ```
 TasksDao.xml
 ```xml
@@ -36,33 +36,33 @@ TasksDao.xml
 ```
 Generated code in action:
 ```go
-def get_all_groups():
+def get_all_projects():
     ds = scoped_ds()
-    return ProjectsDaoEx(ds).get_all_groups()
+    return ProjectsDaoEx(ds).get_all_projects()
 
 
 def get_project(p_id):
     ds = scoped_ds()
-    group = ProjectsDaoEx(ds).read_group(p_id)
-    return group
+    project = ProjectsDaoEx(ds).read_project(p_id)
+    return project
 
 
 def create_project(p_name):
     ds = scoped_ds()
-    group = Project(p_name=p_name)
-    ProjectsDaoEx(ds).create_group(group)
+    project = Project(p_name=p_name)
+    ProjectsDaoEx(ds).create_project(project)
     ds.commit()
 
 
 def update_project(p_id, p_name):
     ds = scoped_ds()
-    ProjectsDaoEx(ds).rename(p_id, p_name)
+    ProjectsDaoEx(ds).rename_project(p_id, p_name)
     ds.commit()
 
 
 def delete_project(p_id):
     ds = scoped_ds()
     ds.delete_by_filter(Task, {"p_id": p_id})
-    ProjectsDaoEx(ds).delete_group(p_id)
+    ProjectsDaoEx(ds).delete_project(p_id)
     ds.commit()
 ```
