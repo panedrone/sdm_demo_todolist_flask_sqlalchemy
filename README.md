@@ -13,7 +13,7 @@ dto.xml
 
 <dto-class name="sa-Task" ref="tasks"/>
 
-<dto-class name="sa-TaskLI" ref="tasks">
+<dto-class name="sa-TaskLi" ref="tasks">
 
     <header><![CDATA[    """
     Task list item

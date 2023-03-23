@@ -3,10 +3,9 @@
 My hand-coded extension of generated class
 
 """
-from sqlalchemy import column
 
 from dbal._tasks_dao import _TasksDao
-from dbal.task_li import TaskLI
+from dbal.task_li import TaskLi
 
 
 class TasksDaoEx(_TasksDao):
@@ -14,12 +13,10 @@ class TasksDaoEx(_TasksDao):
     def __init__(self, ds):
         super().__init__(ds)
 
-    def get_tasks_by_project(self, p_id):
-        q = self.ds.get_query(TaskLI)
+    def get_project_tasks(self, p_id):
+        q = self.ds.get_query(TaskLi)
         q = q.filter_by(p_id=p_id)
-        q = q.order_by(TaskLI.t_date, TaskLI.t_id)
-        fields = ['t_id', 't_date', 't_subject', 't_priority']
-        entities = [column(f) for f in fields]
-        q = q.with_entities(*entities)  # not before filter_by!!!
+        q = q.order_by(TaskLi.t_date, TaskLi.t_id)
+        q = q.with_entities(TaskLi.t_id, TaskLi.t_date, TaskLi.t_subject, TaskLi.t_priority)  # not before filter_by!!!
         tasks = q.all()
         return tasks
