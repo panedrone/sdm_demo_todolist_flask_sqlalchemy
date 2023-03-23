@@ -147,11 +147,6 @@
                                     {{ current_subject }}
                                 </div>
                             </td>
-                            <td>
-                                <div style="color: crimson;max-width: 200px;">
-                                    {{ task_error }}
-                                </div>
-                            </td>
                             <td class="w1">
                                 <a href="#" @click="taskUpdate()">
                                     <input type="button" value="&#x2713;"/>
@@ -200,6 +195,9 @@
                             </td>
                         </tr>
                     </table>
+                    <div style="color: crimson;max-width: 310px;">
+                        {{ task_error }}
+                    </div>
                 </form>
             </td>
         </tr>
