@@ -2,17 +2,17 @@ from datetime import datetime
 
 from dbal.data_store import scoped_ds
 from dbal.task import Task
-from dbal.tasks_dao_ex import TasksDaoEx
+from dbal.tasks_dao_ex import TasksDao
 
 
 def get_tasks_by_project(p_id):
     ds = scoped_ds()
-    return TasksDaoEx(ds).get_tasks_by_project(p_id)
+    return TasksDao(ds).get_project_tasks(p_id)
 
 
 def read_task(t_id):
     ds = scoped_ds()
-    task = TasksDaoEx(ds).read_task(t_id)
+    task = TasksDao(ds).read_task(t_id)
     return task
 
 
@@ -26,18 +26,18 @@ def create_task(p_id, t_subject):
     task.t_date = dt_string
     task.t_priority = 1
     task.t_comments = ''
-    TasksDaoEx(ds).create_task(task)
+    TasksDao(ds).create_task(task)
     ds.commit()
     return task
 
 
 def update_task(t_id: int, data: dict):
     ds = scoped_ds()
-    TasksDaoEx(ds).update_task(t_id, data)
+    TasksDao(ds).update_task(t_id, data)
     ds.commit()
 
 
 def delete_task(t_id):
     ds = scoped_ds()
-    TasksDaoEx(ds).delete_task(t_id)
+    TasksDao(ds).delete_task(t_id)
     ds.commit()
