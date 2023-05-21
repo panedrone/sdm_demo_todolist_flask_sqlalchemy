@@ -10,7 +10,7 @@ from dbal.data_store import init_ds
 
 flask_app = flask.Flask(__name__)
 
-blueprint = Blueprint('api', __name__, url_prefix='')
+blueprint = Blueprint('api', __name__, url_prefix='/api')
 
 api = Api(blueprint)
 
