@@ -10,7 +10,7 @@ from dbal.data_store import init_ds
 
 flask_app = flask.Flask(__name__)
 
-blueprint = Blueprint('api', __name__, url_prefix='/api')
+blueprint = Blueprint('api', __name__, url_prefix='/api/')
 
 api = Api(blueprint)
 
@@ -61,10 +61,10 @@ def add_resources(root):
     from resources.project_list_resource import ProjectListResource
     from resources.task_resource import TaskResource
 
-    root.add_resource(ProjectListResource, "/projects")
-    root.add_resource(ProjectResource, "/projects/<int:p_id>")
-    root.add_resource(ProjectTasksResource, '/projects/<int:p_id>/tasks')
-    root.add_resource(TaskResource, '/tasks/<int:t_id>')
+    root.add_resource(ProjectListResource, "projects")
+    root.add_resource(ProjectResource, "projects/<int:p_id>")
+    root.add_resource(ProjectTasksResource, 'projects/<int:p_id>/tasks')
+    root.add_resource(TaskResource, 'tasks/<int:t_id>')
 
 
 if __name__ == "__main__":
