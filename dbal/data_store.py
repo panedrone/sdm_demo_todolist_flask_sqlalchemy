@@ -41,7 +41,7 @@ class DataStore:
         """
         :param cls: a model class containing static field SQL
         :param params: a tuple of SQL params
-        :return: a model object
+        :return: a model object or error string
         """
         pass
 
@@ -160,8 +160,7 @@ class DataStore:
         """
         :param sql: str, SQL statement
         :param params: dict, optional, SQL parameters
-        :return single fetched row
-        :raise Exception: if amount of rows != 1
+        :return single fetched row or error string
         """
         pass
 
@@ -169,7 +168,7 @@ class DataStore:
         """
         :param sql: str, SQL statement
         :param params: dict, optional, SQL parameters.
-        :param callback: а function delivering fetched rows to caller
+        :param callback: Ð° function delivering fetched rows to caller
         :return: None
         """
         pass
@@ -287,7 +286,7 @@ if flask_sqlalchemy:
 #     Float = oracle.NUMBER
 #
 #     # unlike default "Float", INSERT works correctly with IDENTITY columns like
-#     # p_id = Column('G_ID', NUMBER, primary_key=True, autoincrement=True)
+#     # g_id = Column('G_ID', NUMBER, primary_key=True, autoincrement=True)
 #     NUMBER = oracle.NUMBER
 #
 #     # https://stackoverflow.com/questions/64903159/convert-oracle-datatypes-to-sqlalchemy-types
@@ -313,7 +312,7 @@ class _DS(DataStore):
         postgresql = 3
         oracle = 4
 
-    # constructor for SQLAlchemy without flask
+    # constructor for SQLAlchemy without flask + session as singleton
 
     # def __init__(self):
     #     self.conn = None
@@ -345,15 +344,11 @@ class _DS(DataStore):
     #     # TODO engine+sessionmaker as singletons + separate scoped_session for separate web-requests
     #     # self.session = sessionmaker(bind=self.engine)()
 
-    # static field assigned in
-    #
-    #   init_ds(db: flask_sqlalchemy.SQLAlchemy):
-    #     _DS.Session = db.session
-    #
+    # static field
     Session: sqlalchemy.orm.scoped_session
 
     def __init__(self):
-        # self.conn = None
+        self.conn = None
         self.transaction = None
         # self.engine = None
         self.engine_type = self.EngineType.sqlite3
@@ -361,7 +356,7 @@ class _DS(DataStore):
         # https://docs.sqlalchemy.org/en/13/orm/contextual.html
         # >>> session_factory = sessionmaker(bind=some_engine)
         # >>> Session = scoped_session(session_factory)
-        # The scoped_session object we’ve created will now call upon the sessionmaker when we “call” the registry:
+        # The scoped_session object weâ€™ve created will now call upon the sessionmaker when we â€œcallâ€� the registry:
         # >>> some_session = Session()
 
         self.session: sqlalchemy.orm.session = _DS.Session()
@@ -423,7 +418,7 @@ class _DS(DataStore):
         """
         :param cls: An __abstract_ model class or plain DTO class containing a static field "SQL"
         :param params: [] the values of SQL params
-        :return: [dict]: an array of dict like [{'p_id': 21, 'p_name': 'Project 1'}, {'p_id': 22, 'p_name': 'Project 2']
+        :return: [dict]: an array of dict like [{'g_id': 21, 'g_name': 'Project 1'}, {'g_id': 22, 'g_name': 'Project 2']
         """
         # rows = self.engine.execute(cls.SQL)  # .fetchall()
         # performs -->
@@ -434,27 +429,27 @@ class _DS(DataStore):
         # raw_conn.row_factory = sqlite3.Row # not working on python 3.11
         # raw_conn.row_factory = dict_factory  # not working on python 3.11
 
-        exec_result = self._exec(cls.SQL, params)
+        exec_res = self._exec(cls.SQL, params)
         try:
-            raw_cursor = exec_result.cursor
+            raw_cursor = exec_res.cursor
             col_names = [tup[0] for tup in raw_cursor.description]
             res = []
-            for row in exec_result:
+            for row in exec_res:
                 row_values = [i for i in row]
                 row_as_dict = dict(zip(col_names, row_values))
                 r = cls(**dict(row_as_dict))
                 res.append(r)
             return res
         finally:
-            exec_result.close()
+            exec_res.close()
 
     def get_one_raw(self, cls, params=None):
         rows = self.get_all_raw(cls, params)
+        if len(rows) == 1:
+            return rows[0]
         if len(rows) == 0:
-            raise Exception('No rows')
-        if len(rows) > 1:
-            raise Exception('More than 1 row exists')
-        return rows[0]
+            return 'No rows'
+        return 'More than 1 row exists'
 
     def get_query(self, cls):
         return self.session.query(cls)
@@ -610,11 +605,11 @@ class _DS(DataStore):
     def query_row(self, sql, params):
         rows = []
         self.query_all_rows(sql, params, lambda row: rows.append(row))
+        if len(rows) == 1:
+            return rows[0]
         if len(rows) == 0:
-            raise Exception('No rows')
-        if len(rows) > 1:
-            raise Exception('More than 1 row exists')
-        return rows[0]
+            return 'No rows'
+        return 'More than 1 row exists'
 
     def query_all_rows(self, sql, params, callback):
         sql = self._format_sql(sql)
