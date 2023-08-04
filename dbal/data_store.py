@@ -1,7 +1,7 @@
 """
     This file is a part of SQL DAL Maker project: https://sqldalmaker.sourceforge.net
     It demonstrates how to implement an interface DataStore in Python + SQLAlchemy.
-    More about DataStore: https://sqldalmaker.sourceforge.net/data_store.html
+    More about DataStore: https://sqldalmaker.sourceforge.net/preconfig.html#ds
     Recent version: https://github.com/panedrone/sqldalmaker/blob/master/src/resources/data_store_sqlalchemy.py
 
     Successfully tested with:
@@ -15,10 +15,9 @@
 
 """
 
-import flask_sqlalchemy  # remove it for a "not flask" version
+import flask_sqlalchemy
 import sqlalchemy.orm
 
-# import cx_Oracle
 from sqlalchemy import text
 
 
@@ -175,40 +174,6 @@ class DataStore:
 
 
 if flask_sqlalchemy:
-    #
-    # How to pre-configure flask_sqlalchemy (do it somewhere in __main__):
-    #
-    # flask_app = flask.Flask(__name__)
-    #
-    # dir_path = os.path.dirname(os.path.realpath(__file__))
-    # flask_app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{dir_path}/todolist.sqlite"
-    #
-    # # add mysql-connector-python to requirements.txt
-    # # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:sa@localhost/todolist'
-    #
-    # # add psycopg2 to requirements.txt
-    # # flask_app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:sa@localhost/my-tests'
-    #
-    # # add cx_oracle to requirements.txt
-    # # if cx_Oracle:
-    # #     user = 'MY_TESTS'
-    # #     pwd = 'sa'
-    # #     dsn = cx_Oracle.makedsn(
-    # #         'localhost', 1521,
-    # #         service_name="orcl"
-    # #         # service_name='your_service_name_if_any'
-    # #     )
-    # # flask_app.config['SQLALCHEMY_DATABASE_URI'] = f'oracle+cx_oracle://{user}:{pwd}@{dsn}'
-    #
-    # # FSADeprecationWarning: SQLALCHEMY_TRACK_MODIFICATIONS adds
-    # # significant overhead and will be disabled by default in the future.
-    # # Set it to True or False to suppress this warning.
-    # flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    #
-    # db = flask_sqlalchemy.SQLAlchemy(flask_app)
-    #
-    # init_ds(db)
-
     Base = None
 
     Column = None
@@ -254,53 +219,6 @@ if flask_sqlalchemy:
         LargeBinary = db.LargeBinary
 
 
-# else:
-#     # the code below is for SQLAlchemy without Flask
-#
-#     Base = sqlalchemy.orm.declarative_base()
-#
-#     Column = sqlalchemy.Column
-#     ForeignKey = sqlalchemy.ForeignKey
-#
-#     SmallInteger = sqlalchemy.SmallInteger
-#     Integer = sqlalchemy.Integer
-#     BigInteger = sqlalchemy.BigInteger
-#
-#     Float = sqlalchemy.Float
-#
-#     DateTime = sqlalchemy.DateTime
-#
-#     String = sqlalchemy.String
-#     Boolean = sqlalchemy.Boolean
-#     LargeBinary = sqlalchemy.LargeBinary
-
-
-# if cx_Oracle:
-#     from sqlalchemy.dialects import oracle
-#
-#     SmallInteger = oracle.NUMBER
-#     Integer = oracle.NUMBER
-#     BigInteger = oracle.NUMBER
-#
-#     Numeric = oracle.NUMBER
-#     Float = oracle.NUMBER
-#
-#     # unlike default "Float", INSERT works correctly with IDENTITY columns like
-#     # g_id = Column('G_ID', NUMBER, primary_key=True, autoincrement=True)
-#     NUMBER = oracle.NUMBER
-#
-#     # https://stackoverflow.com/questions/64903159/convert-oracle-datatypes-to-sqlalchemy-types
-#     # https://docs.sqlalchemy.org/en/14/dialects/oracle.html
-#     # Provide the oracle DATE type.
-#     #     This type has no special Python behavior, except that it subclasses
-#     #     :class:`_types.DateTime`; this is to suit the fact that the Oracle
-#     #     ``DATE`` type supports a time value.
-#     DateTime = oracle.DATE  # (timezone=False)
-#
-#     String = oracle.NVARCHAR
-#     Boolean = oracle.LONG
-#     LargeBinary = oracle.BLOB
-
 def scoped_ds() -> DataStore:  # factory
     return _DS()
 
@@ -312,75 +230,14 @@ class _DS(DataStore):
         postgresql = 3
         oracle = 4
 
-    # constructor for SQLAlchemy without flask + session as singleton
-
-    # def __init__(self):
-    #     self.conn = None
-    #     self.transaction = None
-    #     self.engine = None
-    #     #
-    #     # === the code below is for SQLAlchemy without flask
-    #     #
-    #     # self.engine = sqlalchemy.create_engine('sqlite:///todolist.sqlite')
-    #     self.engine_type = self.EngineType.sqlite3
-    #
-    #     # self.engine = sqlalchemy.create_engine('postgresql://postgres:sa@localhost/my-tests')
-    #     # self.engine_type = self.EngineType.postgresql
-    #
-    #     # https://www.tutorialguruji.com/dbms/how-do-i-execute-a-mysql-stored-procedure-in-a-sqlalchemy-scoped-session-to-return-a-single-result-set-of-data-for-flask-web-app/
-    #     # self.engine = sqlalchemy.create_engine('mysql+mysqlconnector://root:root@localhost/sakila')
-    #     # self.engine_type = self.EngineType.mysql
-    #
-    #     # user = 'MY_TESTS'
-    #     # pwd = 'sa'
-    #     # dsn = cx_Oracle.makedsn(
-    #     #     'localhost', 1521,
-    #     #     service_name="orcl"
-    #     #     # service_name='your_service_name_if_any'
-    #     # )
-    #     # self.engine = sqlalchemy.create_engine(f'oracle+cx_oracle://{user}:{pwd}@{dsn}', echo=False)
-    #     # self.engine_type = self.EngineType.oracle
-
-    #     # TODO engine+sessionmaker as singletons + separate scoped_session for separate web-requests
-    #     # self.session = sessionmaker(bind=self.engine)()
-
     # static field
     Session: sqlalchemy.orm.scoped_session
 
     def __init__(self):
         self.conn = None
         self.transaction = None
-        # self.engine = None
         self.engine_type = self.EngineType.sqlite3
-
-        # https://docs.sqlalchemy.org/en/13/orm/contextual.html
-        # >>> session_factory = sessionmaker(bind=some_engine)
-        # >>> Session = scoped_session(session_factory)
-        # The scoped_session object weâ€™ve created will now call upon the sessionmaker when we â€œcallâ€� the registry:
-        # >>> some_session = Session()
-
         self.session: sqlalchemy.orm.session = _DS.Session()
-
-        # constructor used in FastAPI demo
-
-    # https://github.com/panedrone/sdm_demo_todolist_fastapi_sqlalchemy
-
-    # def __init__(self, session: sqlalchemy.orm.Session):
-    #     self.conn = None
-    #     self.transaction = None
-    #     self.engine = None
-    #     self.engine_type = self.EngineType.sqlite3
-    #     self.session: sqlalchemy.orm.session = session
-
-    # the code below is for SQLAlchemy without flask + session as singleton (no scoped sessions)
-    #
-    # def open(self):
-    #     self.conn = self.engine.connect()
-    #
-    # def close(self):
-    #     if self.conn:
-    #         self.conn.close()
-    #         self.conn = None
 
     def begin(self):
         if self.transaction is None:
