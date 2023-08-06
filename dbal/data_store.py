@@ -18,8 +18,6 @@
 import flask_sqlalchemy
 import sqlalchemy.orm
 
-from sqlalchemy import text
-
 
 # from sqlalchemy.dialects import oracle
 
@@ -293,6 +291,8 @@ class _DS(DataStore):
     #       def init_ds(db: flask_sqlalchemy.SQLAlchemy):
     #           _DS.orm_scoped_session = db.session
     #
+    # ----------------------------------------------------------------------------------------------
+    #
     # ======= Using of "scoped_session":
     #
     # https://docs.sqlalchemy.org/en/13/orm/contextual.html
@@ -302,13 +302,15 @@ class _DS(DataStore):
     #
     # The scoped_session object we've created will now call upon the sessionmaker when we "call" the registry:
     #
-    # >>> orm_session = Session()
+    # >>> some_session = Session()
+    #
+    # ----------------------------------------------------------------------------------------------
     #
     # === panedrone:
     #
-    #   1) ^^^ "orm_session" is of type "sqlalchemy.orm.Session".
-    #   2) closing of "orm_session" is performed automatically, no need to call orm_session.close().
-    #      looks like it happens in "scoped_session.registry.remove()".
+    #   1) ^^^ "some_session" is of type "sqlalchemy.orm.Session"
+    #   2) no need to call some_session.close() yourself because it is performed automatically in here:
+    #           scoped_session.registry.remove()
 
     def __init__(self):
 
@@ -347,32 +349,26 @@ class _DS(DataStore):
     def get_all_raw(self, cls, params=None) -> []:
         """
         :param cls: An __abstract_ model class or plain DTO class containing a static field "SQL"
-        :param params: [] the values of SQL params
-        :return: [dict]: an array of dict like [{'g_id': 21, 'g_name': 'Project 1'}, {'g_id': 22, 'g_name': 'Project 2']
+        :param params: []: the values of SQL params
+        :return: [cls]: an array of of 'cls' objects
         """
-        # rows = self.engine.execute(cls.SQL)  # .fetchall()
-        # performs -->
-        # connection = self.connect(close_with_result=True) ---- no need because of connected
         if params is None:
             params = []
 
-        # raw_conn.row_factory = sqlite3.Row # not working on python 3.11
-        # raw_conn.row_factory = dict_factory  # not working on python 3.11
-
-        exec_res = self._exec(cls.SQL, params)
+        cursor_result = self._exec(cls.SQL, params)
         try:
-            raw_cursor = exec_res.cursor
+            cursor = cursor_result.cursor
             # === panedrone: lower() is required because of oracle column names are always in upper case
-            col_names = [tup[0].lower() for tup in raw_cursor.description]
+            col_names = [tup[0].lower() for tup in cursor.description]
             res = []
-            for row in exec_res:
+            for row in cursor_result:
                 row_values = [i for i in row]
                 row_as_dict = dict(zip(col_names, row_values))
                 r = cls(**dict(row_as_dict))
                 res.append(r)
             return res
         finally:
-            exec_res.close()
+            cursor_result.close()
 
     def get_one_raw(self, cls, params=None):
         rows = self.get_all_raw(cls, params)
@@ -424,10 +420,20 @@ class _DS(DataStore):
         """
         :param sql:
         :param params:
-        :return: <sqlalchemy.engine.cursor.LegacyCursorResult object at 0x00000243D83C5D00>
+        :return:
+                    "sqlalchemy.engine.cursor.CursorResult" while using "txt = sqlalchemy.text(sql)" and
+                    "sqlalchemy.engine.cursor.LegacyCursorResult" while using "txt = sql"
         """
         pp = tuple(params)
-        txt = text(sql)  # don't use sqlalchemy.text(sql) with '%' as params
+
+        txt = sqlalchemy.text(sql)
+
+        # while using "txt = sql", "execute(txt, pp): throws randomly this:
+        #
+        #       sqlalchemy.exc.ArgumentError: Textual SQL expression should be explicitly declared as text()
+
+        # txt = sql
+
         return self.orm_session.execute(txt, pp)
 
     def _exec_proc_pg(self, sql, params):
@@ -543,27 +549,24 @@ class _DS(DataStore):
         return 'More than 1 row exists'
 
     def query_all_rows(self, sql, params, callback):
-
         sql = self._format_sql(sql)
         sp = self._get_sp_name(sql)
-
         if sp is None:
-            exec_res = self._exec(sql, params)
+            cursor_result = self._exec(sql, params)
             try:
-                raw_cursor = exec_res.cursor
+                cursor = cursor_result.cursor
                 # === panedrone:
-                #       the same logic is used in get_all_raw(...,
-                #       but tup[0].lower() should not be used in here
-                #       and col_names must be used as-is:
-                col_names = [tup[0] for tup in raw_cursor.description]
-                for row in exec_res:
+                #       the same logic is used in "get_all_raw(...",
+                #       but "tup[0].lower()" should not be used in "query_all_rows(..."
+                #       because "col_names" must be used as-is:
+                col_names = [tup[0] for tup in cursor.description]
+                for row in cursor_result:
                     row_values = [i for i in row]
                     row_as_dict = dict(zip(col_names, row_values))
                     callback(row_as_dict)
                 return
             finally:
-                exec_res.close()
-
+                cursor_result.close()
         if self.engine_type != self.EngineType.mysql:
             raise Exception('Not supported for this engine')
         self._query_sp_mysql(sp, lambda result: self._fetch_all(result, callback), params)
