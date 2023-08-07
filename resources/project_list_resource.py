@@ -15,7 +15,7 @@ class NewProjectSchema(mm.Schema):
     # "required" just means "exists in JSON"
     p_name = mm.fields.Str(required=True,
                            allow_none=False,
-                           validate=Length(min=1, max=256, error="Group name a string[1..256] expected"))
+                           validate=Length(min=1, max=256, error="Project name a string[1..256] expected"))
 
     # class Meta:
     #     fields = ("p_name",)
