@@ -30,4 +30,5 @@
         <crud dto="sa-Task"/>
 
     </dao-class>
+
 </sdm>
