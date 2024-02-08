@@ -1,6 +1,6 @@
 # sdm_todolist_flask_sqlalchemy
 
-A project demonstrating how to use [SQL DAL Maker](https://github.com/panedrone/sqldalmaker) + Python/Flask/Flask-SQLAlchemy.
+A project demonstrating how to use [SQL DAL Maker](https://github.com/panedrone/sqldalmaker) + Python/Flask-SQLAlchemy.
 
 Front-end is written in Vue.js 2.7. RDBMS is SQLite3.
 
@@ -19,26 +19,19 @@ sdm.xml
     <dto-class name="sa-Task" ref="tasks"/>
 
     <dto-class name="sa-TaskLi" ref="tasks">
-
         <header><![CDATA[    """
     Task list item
     """
     __table_args__ = {'extend_existing': True}]]></header>
-
         <field column="t_comments" type="-"/>
-
     </dto-class>
 
     <dao-class name="_ProjectsDao">
-
         <crud dto="sa-Project"/>
-
     </dao-class>
 
     <dao-class name="_TasksDao">
-
         <crud dto="sa-Task"/>
-
     </dao-class>
 
 </sdm>
